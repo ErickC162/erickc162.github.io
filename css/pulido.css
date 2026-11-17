@@ -1,0 +1,100 @@
+/* =====================================================================
+   Pulido con criterios de diseño de Apple (skill "apple-design" de Emil Kowalski).
+   Se carga al final: solo ajusta lo existente, no cambia la estructura.
+   ===================================================================== */
+
+/* ---- 1. Tipografía: tracking según el tamaño y texto que respeta el tamaño del usuario ---- */
+html { font-size: 100%; }
+body { font-size: 1rem; font-optical-sizing: auto; }
+h1, .section-title, .tl-year, .stats b, .project-num, .loader-track { letter-spacing: -0.01em; } /* titulares grandes: más juntos */
+.about-lead { letter-spacing: -0.03em; line-height: 1.06; }
+.about-text { font-size: 1.0625rem; max-width: 60ch; }
+.tl-desc { font-size: 1rem; max-width: 60ch; line-height: 1.65; }
+.project-desc { font-size: .9375rem; max-width: 65ch; }
+.stats span { font-size: .8125rem; }
+.hello, .role-small { letter-spacing: -0.005em; }
+.eyebrow, .project-kind, .tl-role small, .role-note, .work-count { letter-spacing: .08em; } /* textos pequeños: un poco más abiertos */
+
+/* ---- 2. Respuesta inmediata al presionar ---- */
+.btn, .pill, .nav-cta, .project-link, .links a, .logo { -webkit-tap-highlight-color: transparent; }
+.nav-cta:active, .project-link:active, .links a:active, .logo:active {
+  transform: scale(0.97);
+  transition: transform 100ms ease-out;
+}
+#avatar { cursor: pointer; touch-action: pan-y; }
+
+/* ---- 3. Materiales: vidrio con borde superior iluminado y profundidad según el tamaño ---- */
+.links, .loader-pill {
+  box-shadow: inset 0 1px 0 rgba(248, 250, 252, .08), 0 8px 24px rgba(2, 6, 23, .35);
+}
+.stats li {
+  box-shadow: inset 0 1px 0 rgba(248, 250, 252, .06), 0 10px 28px rgba(2, 6, 23, .28);
+}
+.project {               /* superficie grande = material más "grueso" */
+  background: rgba(30, 41, 59, .5);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: inset 0 1px 0 rgba(248, 250, 252, .07), 0 24px 60px rgba(2, 6, 23, .45);
+}
+.project-visual { box-shadow: inset 0 1px 0 rgba(248, 250, 252, .04); }
+
+/* imágenes promocionales de los proyectos (1600 × 1000) */
+.project-visual.has-img { padding: 0; min-height: 0; border-color: rgba(248, 250, 252, .08); background: #0F172A; aspect-ratio: 2 / 1; order: -1; }
+/* en las tarjetas con imagen, la imagen va arriba y manda; el texto se resume en 2 líneas */
+.project:has(.has-img) { grid-template-rows: auto auto auto 1fr; gap: 14px; }
+.project:has(.has-img) .project-desc { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.project-visual.has-img img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%;
+  transition: transform .8s var(--ease);
+}
+@media (hover: hover) { .project:hover .project-visual.has-img img { transform: scale(1.035); } }
+@media (max-width: 760px) { .project-visual.has-img { aspect-ratio: 16 / 10; } }
+@media (prefers-reduced-motion: reduce) { .project-visual.has-img img { transition: none; } }
+
+/* el menú fijo: sin línea dura debajo; un desvanecido suave donde se cruza con el contenido */
+.nav.is-scrolled { border-bottom-color: transparent; background: rgba(15, 23, 42, .62); backdrop-filter: blur(20px) saturate(160%); -webkit-backdrop-filter: blur(20px) saturate(160%); }
+.nav::after {
+  content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 24px; pointer-events: none;
+  background: linear-gradient(rgba(15, 23, 42, .5), rgba(15, 23, 42, .18) 45%, rgba(15, 23, 42, .04) 80%, transparent);
+  opacity: 0; transition: opacity .4s;
+}
+.nav.is-scrolled::after { opacity: 1; }
+
+/* fundido inferior de la portada con degradado suavizado (sin borde visible) */
+.hero::after {
+  background: linear-gradient(
+    rgba(15, 23, 42, 0) 0%, rgba(15, 23, 42, .03) 19%, rgba(15, 23, 42, .1) 34%, rgba(15, 23, 42, .22) 47%,
+    rgba(15, 23, 42, .38) 59%, rgba(15, 23, 42, .56) 70%, rgba(15, 23, 42, .74) 80%, rgba(15, 23, 42, .89) 90%, #0F172A 100%);
+}
+
+/* ---- 4. Ubicación: el menú marca la sección en la que estás ---- */
+.links { position: relative; }
+.links a.is-active { color: var(--text); background: rgba(248, 250, 252, .08); box-shadow: inset 0 1px 0 rgba(248, 250, 252, .08); }
+
+/* ---- 5. Movimiento: las cosas se "materializan" (desenfoque + opacidad + desplazamiento) ---- */
+.reveal { filter: blur(6px); transition: opacity .8s var(--ease), transform .8s var(--ease), filter .8s var(--ease); }
+.reveal.is-in { filter: none; }
+.stats li { transition: opacity .8s var(--ease), transform .8s var(--ease), filter .8s var(--ease), border-color .5s; }
+.role-word { transition: transform .7s var(--ease), filter .7s var(--ease), opacity .7s var(--ease); }
+.role-word:not(.is-on) { filter: blur(4px); opacity: .4; }
+
+/* elevación de tarjetas solo en dispositivos con mouse (en táctil no hay "hover") */
+@media (hover: none) {
+  .project:hover { transform: none; border-color: var(--line); }
+}
+
+/* ---- 6. Accesibilidad: movimiento reducido, transparencia reducida y más contraste ---- */
+@media (prefers-reduced-motion: reduce) {
+  /* sin desplazamientos ni desenfoques: solo un fundido corto, que sigue ayudando a entender */
+  .reveal { opacity: 0; transform: none; filter: none; transition: opacity .25s ease; }
+  .reveal.is-in { opacity: 1; }
+  .role-word { transition: opacity .2s ease; filter: none; }
+  .project:hover { transform: none; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .links, .nav.is-scrolled, .project, .loader-pill, .avail { background: #1E293B; backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
+@media (prefers-contrast: more) {
+  :root { --mut: rgba(248, 250, 252, .85); --line: rgba(248, 250, 252, .35); }
+  .links, .nav.is-scrolled, .project, .stats li { background: #0F172A; backdrop-filter: none; }
+}

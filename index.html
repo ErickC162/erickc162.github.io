@@ -1,49 +1,313 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Erick's Personal Site</title>
-    <link rel="stylesheet" href="styles.css">
-    <meta property="og:image" content="foto.jpg">
-    <link rel="icon" href="foto.jpg" type="image/x-icon">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Erick Carcelén · Desarrollador de software</title>
+<meta name="description" content="Portafolio de Erick Carcelén, desarrollador de software y datos en Quito, Ecuador.">
+<meta name="theme-color" content="#0F172A">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css?v=5">
+<link rel="stylesheet" href="css/secciones.css?v=5">
+<link rel="stylesheet" href="css/pulido.css?v=5">
+<link rel="stylesheet" href="css/tarjetas.css?v=10">
+<link rel="stylesheet" href="css/final.css?v=2">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
 </head>
-<body>
-    <header>
-        <h1>Erick's Personal Site</h1>
-    </header>
-    <div class="container">
-        <div class="about-me">
-            <img src="foto.jpg" alt="Tu Fotografía">
-            <h2>Hi, I'm Erick Carcelén</h2>
-            <p>
-                I’m from Quito, Ecuador. Currently studying at Escuela Politécnica Nacional. I have started to learn about Data Analytics because I want to be an expert in this field. I'm really very interested in my career, learning new things every day.
-            </p>
-        </div>
-        <section class="skills">
-            <h2>Skills</h2>
-            <ul>
-                <li>Python Programming</li>
-                <li>Java OOP Programming</li>
-                <li>In progress...</li>
-                <!-- Añade más habilidades aquí -->
-            </ul>
-        </section>
-        <section class="projects">
-            <h2>Projects</h2>
-            <ul>
-                <li>In progress...</li>
-                <!-- Añade más proyectos aquí -->
-            </ul>
-        </section>
-        <section class="contact">
-            <h2>Contact</h2>
-            <ul>
-                <li>Phone: +593 988 419 231</li>
-                <li>LinkedIn: Erick Carcelén</li>
-                <li>GitHub: ErickC162</li>
-            </ul>
-        </section>
+<body class="is-loading">
+
+  <!-- ============ Pantalla de carga ============ -->
+  <div class="loader" id="loader" aria-live="polite">
+    <div class="loader-marquee" aria-hidden="true">
+      <div class="loader-track">
+        <span>SOFTWARE</span><i>✦</i><span>DATOS</span><i>✦</i><span>INTELIGENCIA ARTIFICIAL</span><i>✦</i>
+        <span>SOFTWARE</span><i>✦</i><span>DATOS</span><i>✦</i><span>INTELIGENCIA ARTIFICIAL</span><i>✦</i>
+      </div>
     </div>
+    <div class="loader-pill" id="loaderPill">
+      <span class="loader-label" id="loaderLabel">Cargando</span>
+      <span class="loader-pct"><span id="loaderPct">0</span>%</span>
+      <span class="loader-bar"><span id="loaderBar"></span></span>
+    </div>
+  </div>
+
+  <!-- ============ Menú ============ -->
+  <header class="nav">
+    <a class="logo" href="#inicio">erick<span>.</span>dev</a>
+    <nav class="links" aria-label="Principal">
+      <a href="#sobre"><span data-t="Sobre mí">Sobre mí</span></a>
+      <a href="#trayectoria"><span data-t="Trayectoria">Trayectoria</span></a>
+      <a href="#proyectos"><span data-t="Proyectos">Proyectos</span></a>
+      <a href="#tecnologias"><span data-t="Stack">Stack</span></a>
+      <a href="#contacto"><span data-t="Contacto">Contacto</span></a>
+    </nav>
+    <a class="nav-cta" href="https://github.com/ErickC162" target="_blank" rel="noopener">GitHub ↗</a>
+  </header>
+
+  <main>
+    <!-- ============ Portada ============ -->
+    <section class="hero" id="inicio">
+      <div class="hero-glow" aria-hidden="true"></div>
+      <canvas id="avatar" aria-label="Avatar 3D de Erick Carcelén"></canvas>
+
+      <div class="hero-name">
+        <p class="hello">Hola, soy</p>
+        <h1><span class="line">ERICK</span><span class="line accent">CARCELÉN</span></h1>
+      </div>
+
+      <div class="hero-role">
+        <p class="role-small">Desarrollador de</p>
+        <div class="role-swap" aria-live="off">
+          <span class="role-word is-on">SOFTWARE</span>
+          <span class="role-word">DATOS</span>
+          <span class="role-word">IA</span>
+        </div>
+        <p class="role-note">Estudiante de la EPN · Pasante en WellPerf</p>
+      </div>
+
+      <a class="scroll-hint" href="#sobre"><span></span>Desliza</a>
+    </section>
+
+    <!-- ============ Sobre mí ============ -->
+    <section class="about wrap" id="sobre">
+      <p class="eyebrow reveal">Sobre mí</p>
+      <p class="about-lead reveal">
+        Me gusta llevar una idea <em>de cero a algo que la gente usa</em>: un juego en una feria,
+        un asistente que atiende clientes o una herramienta que un equipo usa todos los días.
+      </p>
+      <div class="about-grid">
+        <p class="about-text reveal">
+          Estudio en la Escuela Politécnica Nacional, en Quito, y hago mis prácticas en el área de TI
+          de WellPerf. Me muevo entre la web, el escritorio, los videojuegos y la inteligencia artificial,
+          con un interés especial en los datos.
+        </p>
+        <ul class="stats">
+          <li class="reveal"><b data-count="5">5</b><span>Proyectos destacados</span></li>
+          <li class="reveal"><b data-count="25" data-suffix="+">25+</b><span>Repositorios en GitHub</span></li>
+          <li class="reveal"><b data-count="4">4</b><span>Plataformas: web, móvil, escritorio y juegos</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ Trayectoria ============ -->
+    <section class="career wrap" id="trayectoria">
+      <h2 class="section-title reveal">Mi <span>trayectoria</span></h2>
+      <div class="timeline" id="timeline">
+        <div class="timeline-line" aria-hidden="true"><span id="timelineFill"></span></div>
+
+        <article class="tl-item reveal">
+          <div class="tl-role"><h3>Estudiante de Ingeniería</h3><p>Escuela Politécnica Nacional</p><small>Mayo 2021 – hoy</small></div>
+          <div class="tl-year"><span class="tl-dot"></span>2021</div>
+          <p class="tl-desc">Carrera de pregrado en Quito. Bases de programación, estructuras de datos, bases de datos y recuperación de información.</p>
+        </article>
+
+        <article class="tl-item reveal">
+          <div class="tl-role"><h3>Pasante de TI</h3><p>WellPerf</p><small>Julio 2026 – hoy</small></div>
+          <div class="tl-year"><span class="tl-dot"></span>2026</div>
+          <p class="tl-desc">Desarrollo de herramientas internas y de un juego interactivo para ferias del sector petrolero, soporte técnico de nivel 1 a los usuarios y otras tareas del área de TI.</p>
+        </article>
+
+        <article class="tl-item reveal">
+          <div class="tl-role"><h3>Desarrollo independiente</h3><p>Proyectos propios</p><small>En paralelo, 2026 – hoy</small></div>
+          <div class="tl-year"><span class="tl-dot"></span>Hoy</div>
+          <p class="tl-desc">Productos completos por cuenta propia: un sitio de minijuegos de fútbol, una app de escritorio para cámaras de seguridad y un asistente de WhatsApp con IA.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ Proyectos (desplazamiento horizontal en escritorio) ============ -->
+    <section class="work" id="proyectos">
+      <div class="work-sticky">
+        <div class="work-head wrap">
+          <h2 class="section-title">Mis <span>proyectos</span></h2>
+          <p class="work-count"><span id="workIndex">01</span> / 05</p>
+        </div>
+        <div class="work-track" id="workTrack">
+
+          <article class="project flip">
+            <div class="flip-inner">
+              <div class="flip-back" inert>
+                <div class="project-info">
+                  <span class="project-num">01</span>
+                  <div><h3>Peloteo</h3><p class="project-kind">Proyecto personal · Web</p></div>
+                </div>
+                <p class="project-desc">Minijuegos diarios sobre el fútbol ecuatoriano: palabra del día, tres en raya con futbolistas, campeones e históricos. Sin cuentas, sin publicidad y sin cookies; cada dato se verifica con su fuente.</p>
+                <div class="project-tools"><span>Herramientas</span><p>React, TypeScript, Vite, Prisma, PostgreSQL, Cloudflare Pages</p></div>
+                <div class="flip-actions">
+                <a class="project-link" href="https://peloteo-nij.pages.dev/" target="_blank" rel="noopener">Ver sitio <b>↗</b></a>
+                  <button class="flip-btn flip-close" type="button" aria-label="Volver a la imagen de Peloteo"><span>Volver</span><i aria-hidden="true">↺</i></button>
+                </div>
+              </div>
+              <div class="flip-front">
+                <div class="flip-media"><img src="assets/proyectos/peloteo.webp?v=3" alt="Peloteo en escritorio y celular: portada con los juegos del día, palabra del día y tres en raya" width="1600" height="1000" decoding="async"></div>
+                <div class="flip-meta">
+                  <span class="project-num">01</span>
+                  <div><h3>Peloteo</h3><p class="project-kind">Proyecto personal · Web</p></div>
+                </div>
+                <button class="flip-btn flip-open" type="button" aria-label="Ver detalles de Peloteo" aria-expanded="false"><span>Detalles</span><i aria-hidden="true">↻</i></button>
+              </div>
+            </div>
+          </article>
+
+          <article class="project flip">
+            <div class="flip-inner">
+              <div class="flip-back" inert>
+                <div class="project-info">
+                  <span class="project-num">02</span>
+                  <div><h3>Asistente de WhatsApp con IA</h3><p class="project-kind">MVP · Backend e IA</p></div>
+                </div>
+                <p class="project-desc">Atiende a los clientes de una cadena de lavanderías: sucursales cercanas, promociones y pedidos a domicilio. Incluye un panel web en tiempo real para los asesores y pruebas de seguridad contra ataques.</p>
+                <div class="project-tools"><span>Herramientas</span><p>Python, FastAPI, Gemini, React, Tailwind, WhatsApp Cloud API</p></div>
+                <div class="flip-actions">
+                  <button class="flip-btn flip-close" type="button" aria-label="Volver a la imagen de Asistente de WhatsApp con IA"><span>Volver</span><i aria-hidden="true">↺</i></button>
+                </div>
+              </div>
+              <div class="flip-front">
+                <div class="flip-media"><img src="assets/proyectos/asistente.webp?v=1" alt="Panel de atención al cliente con métricas en tiempo real y una conversación de ejemplo en WhatsApp con el asistente" width="1600" height="1000" decoding="async"></div>
+                <div class="flip-meta">
+                  <span class="project-num">02</span>
+                  <div><h3>Asistente de WhatsApp con IA</h3><p class="project-kind">MVP · Backend e IA</p></div>
+                </div>
+                <button class="flip-btn flip-open" type="button" aria-label="Ver detalles de Asistente de WhatsApp con IA" aria-expanded="false"><span>Detalles</span><i aria-hidden="true">↻</i></button>
+              </div>
+            </div>
+          </article>
+
+          <article class="project flip">
+            <div class="flip-inner">
+              <div class="flip-back" inert>
+                <div class="project-info">
+                  <span class="project-num">03</span>
+                  <div><h3>Oil &amp; Power</h3><p class="project-kind">WellPerf · Videojuego</p></div>
+                </div>
+                <p class="project-desc">Juego para el stand de feria: el jugador interpreta registros de pozo (Gamma Ray y Resistividad) para encontrar el yacimiento. Física real, audio generado por código y pantalla táctil.</p>
+                <div class="project-tools"><span>Herramientas</span><p>Godot 4, GDScript, shaders, física Verlet</p></div>
+                <div class="flip-actions">
+                  <button class="flip-btn flip-close" type="button" aria-label="Volver a la imagen de Oil & Power"><span>Volver</span><i aria-hidden="true">↺</i></button>
+                </div>
+              </div>
+              <div class="flip-front">
+                <div class="flip-media"><img src="assets/proyectos/oilpower.webp?v=1" alt="Oil &amp; Power en una pantalla táctil de feria: pozo con capas reveladas y registro de Gamma Ray y Resistividad" width="1600" height="1000" decoding="async"></div>
+                <div class="flip-meta">
+                  <span class="project-num">03</span>
+                  <div><h3>Oil &amp; Power</h3><p class="project-kind">WellPerf · Videojuego</p></div>
+                </div>
+                <button class="flip-btn flip-open" type="button" aria-label="Ver detalles de Oil & Power" aria-expanded="false"><span>Detalles</span><i aria-hidden="true">↻</i></button>
+              </div>
+            </div>
+          </article>
+
+          <article class="project flip">
+            <div class="flip-inner">
+              <div class="flip-back" inert>
+                <div class="project-info">
+                  <span class="project-num">04</span>
+                  <div><h3>Plataforma interna</h3><p class="project-kind">WellPerf · Web full-stack</p></div>
+                </div>
+                <p class="project-desc">Portal de módulos para el personal: credenciales digitales, asistencia, hojas de vida, compras y requisiciones, con inicio de sesión corporativo y reportes en PDF. Código privado de la empresa.</p>
+                <div class="project-tools"><span>Herramientas</span><p>Next.js, Tailwind, PostgreSQL, Microsoft Entra ID</p></div>
+                <div class="flip-actions">
+                  <button class="flip-btn flip-close" type="button" aria-label="Volver a la imagen de Plataforma interna"><span>Volver</span><i aria-hidden="true">↺</i></button>
+                </div>
+              </div>
+              <div class="flip-front">
+                <div class="flip-media"><img src="assets/proyectos/plataforma.webp?v=2" alt="Portal de módulos de WellPerf en el navegador y una credencial digital de ejemplo" width="1600" height="1000" decoding="async"></div>
+                <div class="flip-meta">
+                  <span class="project-num">04</span>
+                  <div><h3>Plataforma interna</h3><p class="project-kind">WellPerf · Web full-stack</p></div>
+                </div>
+                <button class="flip-btn flip-open" type="button" aria-label="Ver detalles de Plataforma interna" aria-expanded="false"><span>Detalles</span><i aria-hidden="true">↻</i></button>
+              </div>
+            </div>
+          </article>
+
+          <article class="project flip">
+            <div class="flip-inner">
+              <div class="flip-back" inert>
+                <div class="project-info">
+                  <span class="project-num">05</span>
+                  <div><h3>ARGOS</h3><p class="project-kind">Proyecto personal · Escritorio</p></div>
+                </div>
+                <p class="project-desc">App de escritorio para ver y mover cámaras de seguridad en vivo, con avisos a Telegram cuando detecta a una persona. Se distribuye como un solo ejecutable.</p>
+                <div class="project-tools"><span>Herramientas</span><p>Python, RTSP, Telegram Bot API, PyInstaller</p></div>
+                <div class="flip-actions">
+                  <button class="flip-btn flip-close" type="button" aria-label="Volver a la imagen de ARGOS"><span>Volver</span><i aria-hidden="true">↺</i></button>
+                </div>
+              </div>
+              <div class="flip-front">
+                <div class="flip-media"><img src="assets/proyectos/argos.webp?v=1" alt="ARGOS mostrando cuatro cámaras de ejemplo y un aviso de persona detectada en Telegram" width="1600" height="1000" decoding="async"></div>
+                <div class="flip-meta">
+                  <span class="project-num">05</span>
+                  <div><h3>ARGOS</h3><p class="project-kind">Proyecto personal · Escritorio</p></div>
+                </div>
+                <button class="flip-btn flip-open" type="button" aria-label="Ver detalles de ARGOS" aria-expanded="false"><span>Detalles</span><i aria-hidden="true">↻</i></button>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Tecnologías ============ -->
+    <section class="stack-sec" id="tecnologias">
+      <div class="wrap stack-head">
+        <h2 class="section-title reveal">Mi <span>stack</span></h2>
+        <p class="stack-hint reveal">Arrástralas, lánzalas o empújalas</p>
+      </div>
+      <div class="stack-stage" id="stackStage">
+        <canvas id="stackCanvas" aria-hidden="true"></canvas>
+        <ul class="stack-list" id="stackList" aria-label="Tecnologías que uso">
+          <li data-g="lang">Python</li><li data-g="lang">TypeScript</li><li data-g="lang">JavaScript</li>
+          <li data-g="web">React</li><li data-g="web">Next.js</li><li data-g="back">FastAPI</li>
+          <li data-g="back">Node.js</li><li data-g="data">PostgreSQL</li><li data-g="data">Prisma</li>
+          <li data-g="web">Tailwind</li><li data-g="game">Godot</li><li data-g="web">Three.js</li>
+          <li data-g="lang">Java</li><li data-g="lang">Kotlin</li><li data-g="lang">Go</li>
+          <li data-g="lang">C</li><li data-g="data">SQL</li><li data-g="ai">Gemini</li>
+          <li data-g="tool">Git</li><li data-g="tool">Cloudflare</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ Contacto ============ -->
+    <section class="contact wrap" id="contacto">
+      <h2 class="contact-title reveal">Hablemos<span>.</span></h2>
+      <p class="contact-lead reveal">¿Tienes un proyecto, una práctica o una idea? Escríbeme y te respondo pronto.</p>
+      <div class="contact-grid">
+        <div class="contact-item reveal">
+          <h3>Correo</h3>
+          <a class="contact-big contact-mail" href="mailto:erickedu2002@hotmail.com">erickedu2002<wbr>@hotmail.com</a>
+        </div>
+        <div class="contact-item reveal">
+          <h3>Ubicación</h3>
+          <p class="contact-big">Quito, Ecuador</p>
+        </div>
+        <div class="contact-item reveal">
+          <h3>Redes</h3>
+          <ul class="contact-social">
+            <li><a href="https://github.com/ErickC162" target="_blank" rel="noopener">GitHub <span>↗</span></a></li>
+            <li><a href="https://www.linkedin.com/in/erick-carcel%C3%A9n/" target="_blank" rel="noopener">LinkedIn <span>↗</span></a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <footer class="site-footer wrap">
+      <p>Diseñado y desarrollado por <strong>Erick Carcelén</strong></p>
+      <p>© 2026 · Quito, Ecuador</p>
+      <a href="#inicio" class="to-top">Volver arriba ↑</a>
+    </footer>
+  </main>
+
+  <script type="module" src="js/main.js?v=13"></script>
+  <script type="module" src="js/secciones.js?v=8"></script>
+  <script type="module" src="js/stack.js?v=1"></script>
 </body>
 </html>

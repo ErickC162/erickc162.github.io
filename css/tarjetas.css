@@ -1,0 +1,171 @@
+/* =====================================================================
+   Tarjetas de proyecto que giran (giro 3D real de la tarjeta).
+   Frente: imagen promocional con el nombre. Reverso: la información.
+
+   Coreografía del giro:
+   1. la tarjeta se despega de la página (sube hacia el visitante y su sombra se aleja),
+   2. gira 180° sobre su eje con una pequeña inclinación, y al final se asienta con un rebote leve,
+   3. durante el giro se ve su CANTO iluminado con el degradado morado → celeste (como el borde
+      de una tarjeta de cristal), y un BRILLO de luz cruza la cara siguiendo el ángulo del giro.
+   ===================================================================== */
+@property --p   { syntax: "<number>"; inherits: true; initial-value: 0; }  /* progreso del giro 0 → 1 */
+@property --lift { syntax: "<number>"; inherits: true; initial-value: 0; } /* despegue 0 → 1 → 0 */
+
+.project.flip {
+  position: relative; display: block; padding: 0; border: 0; background: none; box-shadow: none;
+  backdrop-filter: none; -webkit-backdrop-filter: none;
+  flex: 0 0 auto;
+  width: min(58vw, calc((100svh - 250px) * 1.6), 920px);
+  height: auto; min-height: 0; aspect-ratio: 16 / 10;
+  perspective: 1800px;
+  transform: none;
+}
+.project.flip:hover { transform: none; }
+
+.flip-inner {
+  position: absolute; inset: 0; transform-style: preserve-3d;
+  --p: 0; --lift: 0;
+  transform:
+    translateZ(calc(var(--lift) * 90px))
+    rotateX(calc(var(--rx, 0deg) + var(--lift) * -7deg))
+    rotateY(calc(var(--ry, 0deg) + var(--p) * 180deg))
+    rotateZ(calc(var(--lift) * -1.5deg));
+  /* el rebote final: la curva pasa un poco de 180° y vuelve */
+  transition: --p 1.05s cubic-bezier(.3, 1.28, .45, 1);
+}
+.project.flip.is-flipped .flip-inner { --p: 1; }
+.project.flip.is-turning .flip-inner { animation: flipLift 1.05s cubic-bezier(.3, .7, .3, 1); }
+@keyframes flipLift { 0% { --lift: 0; } 35% { --lift: 1; } 70% { --lift: .55; } 100% { --lift: 0; } }
+
+/* sombra en el "piso": se aleja y se difumina mientras la tarjeta está en el aire */
+.project.flip::before {
+  content: ""; position: absolute; left: 6%; right: 6%; bottom: -4%; height: 18%; border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(2, 6, 23, .75), transparent);
+  filter: blur(18px); opacity: .7; transform: translateY(0) scale(1); pointer-events: none;
+}
+.project.flip.is-turning::before { animation: flipShadow 1.05s cubic-bezier(.3, .7, .3, 1); }
+@keyframes flipShadow { 35% { opacity: .3; transform: translateY(26px) scale(.8); filter: blur(30px); } }
+
+/* ---------- caras ---------- */
+.flip-front, .flip-back {
+  position: absolute; inset: 0; border-radius: 28px; overflow: hidden;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  border: 1px solid rgba(248, 250, 252, .1);
+  box-shadow: inset 0 1px 0 rgba(248, 250, 252, .08), 0 30px 80px rgba(2, 6, 23, .55);
+}
+.flip-front { background: #0B1222; }
+.flip-back {
+  transform: rotateY(180deg);
+  display: flex; flex-direction: column; gap: 16px; padding: clamp(22px, 3vw, 40px);
+  background:
+    radial-gradient(70% 90% at 100% 0%, rgba(56, 189, 248, .16), transparent 60%),
+    radial-gradient(70% 90% at 0% 100%, rgba(139, 92, 246, .26), transparent 60%),
+    #172033;
+}
+.flip-back .project-desc { font-size: clamp(.95rem, 1.2vw, 1.08rem); max-width: 60ch; display: block; -webkit-line-clamp: unset; overflow: visible; }
+.flip-back .project-tools { margin-top: auto; }
+.flip-actions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
+.flip-actions .project-link { position: static; }
+
+/* canto iluminado: un marco de luz que solo se enciende mientras la tarjeta gira */
+.flip-front::before, .flip-back::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; z-index: 6; pointer-events: none;
+  padding: 2px;
+  background: linear-gradient(135deg, var(--violet), var(--sky), var(--violet));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  opacity: var(--lift);            /* se enciende mientras la tarjeta está en el aire */
+}
+/* resplandor del canto hacia afuera de la tarjeta */
+.flip-inner::after {
+  content: ""; position: absolute; inset: 0; border-radius: 28px; pointer-events: none;
+  box-shadow: 0 0 0 1px rgba(139, 92, 246, .55), 0 0 28px 2px rgba(139, 92, 246, .55), 0 0 60px 6px rgba(56, 189, 248, .28);
+  opacity: var(--lift);
+}
+
+/* brillo de luz que cruza la cara según el ángulo del giro */
+.flip-front::after, .flip-back::after {
+  content: ""; position: absolute; inset: -20%; z-index: 5; pointer-events: none;
+  background: linear-gradient(105deg, transparent 38%, rgba(224, 231, 255, .28) 47%, rgba(186, 230, 253, .42) 50%, rgba(196, 181, 253, .28) 53%, transparent 62%);
+  mix-blend-mode: screen;
+  transform: translateX(calc(-70% + var(--p) * 140%));
+  opacity: calc(var(--lift) * 1.6);
+}
+
+/* imagen del frente */
+.flip-media { position: absolute; inset: 0; }
+.flip-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* nombre sobre la imagen, con un velo para que se lea */
+.flip-meta {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 3;
+  display: flex; align-items: flex-end; gap: 16px; padding: clamp(18px, 2.4vw, 30px);
+  padding-right: 170px;
+  padding-top: clamp(60px, 9vw, 120px);
+  /* velo con curva suave: transparente arriba y casi sólido detrás del texto */
+  background: linear-gradient(rgba(11, 18, 34, 0) 0%, rgba(11, 18, 34, .45) 25%, rgba(11, 18, 34, .78) 50%, rgba(11, 18, 34, .93) 72%, #0B1222 100%);
+}
+.flip-meta h3, .flip-meta .project-kind { text-shadow: 0 1px 2px rgba(2, 6, 23, .9), 0 0 18px rgba(2, 6, 23, .85); }
+.flip-meta h3 { font: 600 clamp(22px, 2.3vw, 34px)/1.05 "Space Grotesk", sans-serif; letter-spacing: -.02em; }
+.flip-meta .project-num { color: transparent; -webkit-text-stroke: 1px rgba(248, 250, 252, .55); }
+
+/* botón para girar */
+.flip-btn {
+  display: inline-flex; align-items: center; gap: 10px; cursor: pointer;
+  padding: 7px 7px 7px 16px; border-radius: 999px; border: 1px solid rgba(248, 250, 252, .18);
+  background: rgba(15, 23, 42, .55); color: var(--text);
+  backdrop-filter: blur(14px) saturate(160%); -webkit-backdrop-filter: blur(14px) saturate(160%);
+  box-shadow: inset 0 1px 0 rgba(248, 250, 252, .14), 0 10px 30px rgba(2, 6, 23, .45);
+  font: 600 14px Inter, sans-serif; -webkit-tap-highlight-color: transparent;
+  transition: transform .15s ease-out, background .3s, border-color .3s;
+}
+.flip-btn i { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-size: 16px;
+  background: linear-gradient(120deg, var(--violet), var(--sky)); transition: transform .5s cubic-bezier(.2, .8, .2, 1); }
+.flip-btn:hover { border-color: rgba(139, 92, 246, .7); background: rgba(30, 41, 59, .7); }
+.flip-btn:hover i { transform: rotate(180deg); }
+.flip-btn:active { transform: scale(.97); transition-duration: .1s; }
+.flip-btn:focus-visible { outline: 2px solid var(--sky); outline-offset: 3px; }
+.flip-open { position: absolute; right: clamp(16px, 2vw, 26px); bottom: clamp(16px, 2.2vw, 28px); z-index: 4; }
+
+/* ---------- celular: imagen a todo el ancho arriba, nombre y botón en una franja compacta ---------- */
+@media (max-width: 760px) {
+  .project.flip { width: 100%; aspect-ratio: auto; height: calc((100vw - 32px) / 1.6 + 132px); min-height: 340px; }
+  .flip-front { display: flex; flex-direction: column; }
+  .flip-front > .flip-media { position: relative; inset: auto; flex: none; aspect-ratio: 16 / 10; }
+  .flip-media img { object-fit: cover; }
+  .flip-meta {
+    position: relative; flex: 1; background: none; align-items: center;
+    padding: 14px 16px; padding-right: 128px; gap: 12px;
+  }
+  .flip-meta h3 { font-size: 21px; }
+  .flip-meta .project-num { display: none; }
+  .flip-meta .project-kind { font-size: 10.5px; letter-spacing: .04em; }
+  .flip-open { right: 14px; left: auto; bottom: auto; top: calc((100vw - 32px) / 1.6 + 38px); padding: 6px 6px 6px 13px; font-size: 13px; }
+  .flip-back { padding: 16px 16px 14px; gap: 8px; }
+  .flip-back .project-info { gap: 0; }
+  .flip-back .project-num { display: none; }
+  .flip-back h3 { font-size: 19px; }
+  .flip-back .project-desc { font-size: .86rem; line-height: 1.45; }
+  .flip-back .project-tools { padding-top: 8px; }
+  .flip-back .project-tools p { font-size: 12.5px; }
+  .flip-back .flip-btn, .flip-back .project-link { padding: 5px 5px 5px 12px; font-size: 12.5px; }
+  .flip-back .flip-btn i, .flip-back .project-link b { width: 26px; height: 26px; }
+}
+
+/* ---------- accesibilidad: sin giro, solo un fundido ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .flip-inner { transform: none !important; transition: none; animation: none !important; }
+  .project.flip::before, .flip-front::before, .flip-back::before, .flip-front::after, .flip-back::after { display: none; }
+  .flip-back { transform: none; opacity: 0; transition: opacity .25s ease; }
+  .flip-front { transition: opacity .25s ease; }
+  .project.flip.is-flipped .flip-back { opacity: 1; }
+  .project.flip.is-flipped .flip-front { opacity: 0; }
+}
+
+/* ---------- nitidez: en reposo la tarjeta es plana (sin capa 3D) ----------
+   Algunos navegadores dibujan las capas 3D a menor resolución y el texto se ve borroso.
+   El 3D solo existe mientras dura el giro; quieta, se muestra la cara visible sin transformar. */
+.project.flip:not(.is-turning) .flip-inner { transform: none; transform-style: flat; }
+.project.flip:not(.is-turning) .flip-back { transform: none; }
+.project.flip:not(.is-turning):not(.is-flipped) .flip-back { visibility: hidden; }
+.project.flip.is-flipped:not(.is-turning) .flip-front { visibility: hidden; }
