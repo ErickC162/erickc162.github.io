@@ -12,7 +12,7 @@
 
 /* el menú toma fondo de vidrio al bajar, para no mezclarse con el contenido */
 .nav { transition: background .4s, backdrop-filter .4s, border-color .4s; border-bottom: 1px solid transparent; }
-.nav.is-scrolled { background: rgba(15, 23, 42, .72); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom-color: var(--line); padding-top: 14px; padding-bottom: 14px; }
+.nav.is-scrolled { background: rgb(var(--bg-rgb) / .72); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom-color: var(--line); padding-top: 14px; padding-bottom: 14px; }
 
 /* aparición al hacer scroll */
 .reveal { opacity: 0; transform: translateY(28px); transition: opacity .9s var(--ease), transform .9s var(--ease); }
@@ -25,13 +25,13 @@
 .about-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: clamp(28px, 5vw, 80px); margin-top: clamp(40px, 7vh, 72px); align-items: start; }
 .about-text { color: var(--mut); font-size: 17px; max-width: 46ch; }
 .stats { list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-.stats li { padding: 22px 20px; border-radius: 20px; background: rgba(30, 41, 59, .55); border: 1px solid var(--line); }
+.stats li { padding: 22px 20px; border-radius: 20px; background: rgb(var(--surface-rgb) / .55); border: 1px solid var(--line); }
 .stats b { display: block; font: 400 clamp(44px, 4.4vw, 64px)/1 Anton, sans-serif; font-variant-numeric: tabular-nums; }
 /* al terminar de contar, el número se ilumina un instante con la paleta */
 .stats b.is-done { animation: countGlow 1.2s var(--ease); }
 @keyframes countGlow {
   0% { text-shadow: 0 0 0 transparent; color: var(--text); }
-  30% { text-shadow: 0 0 24px rgba(139, 92, 246, .8), 0 0 8px rgba(56, 189, 248, .6); color: #E9E5FF; }
+  30% { text-shadow: 0 0 24px rgba(139, 92, 246, .8), 0 0 8px rgba(56, 189, 248, .6); color: var(--count-flash); }
   100% { text-shadow: 0 0 0 transparent; color: var(--text); }
 }
 .stats li { transition: opacity .9s var(--ease), transform .9s var(--ease), border-color .5s; }
@@ -81,12 +81,12 @@
   flex: 0 0 clamp(320px, 38vw, 560px);
   display: grid; grid-template-rows: auto auto 1fr auto; gap: 18px;
   height: min(calc(100svh - 270px), 560px); min-height: 380px; padding: clamp(22px, 2.4vw, 32px);
-  border-radius: 28px; background: rgba(30, 41, 59, .55); border: 1px solid var(--line);
+  border-radius: 28px; background: rgb(var(--surface-rgb) / .55); border: 1px solid var(--line);
   transition: border-color .35s, transform .35s var(--ease);
 }
 .project:hover { border-color: rgba(139, 92, 246, .55); transform: translateY(-4px); }
 .project-info { display: flex; gap: 18px; align-items: flex-start; }
-.project-num { font: 400 clamp(40px, 3.6vw, 56px)/1 Anton, sans-serif; color: transparent; -webkit-text-stroke: 1px rgba(248, 250, 252, .35); }
+.project-num { font: 400 clamp(40px, 3.6vw, 56px)/1 Anton, sans-serif; color: transparent; -webkit-text-stroke: 1px rgb(var(--ink-rgb) / .35); }
 .project h3 { font: 600 clamp(22px, 2vw, 30px)/1.1 "Space Grotesk", sans-serif; letter-spacing: -.015em; }
 .project-kind { margin-top: 6px; font: 500 12px "JetBrains Mono", monospace; letter-spacing: .06em; text-transform: uppercase; color: var(--sky); }
 .project-desc { color: var(--mut); font-size: 15px; line-height: 1.6; }
@@ -100,7 +100,7 @@
   padding: 6px 6px 6px 14px; border-radius: 999px; background: var(--text); color: var(--bg);
   font: 600 13px Inter, sans-serif; transition: transform .3s var(--ease);
 }
-.project-link b { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: var(--grad); color: #fff; font-size: 12px; }
+.project-link b { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: var(--grad); color: var(--on-grad); font-size: 12px; }
 .project-link:hover { transform: translateY(-2px); }
 .project-tools:has(.project-link) p { padding-right: 120px; }
 @media (max-width: 760px) { .project-link { position: static; margin-top: 12px; } .project-tools:has(.project-link) p { padding-right: 0; } }

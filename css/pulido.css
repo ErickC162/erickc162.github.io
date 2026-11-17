@@ -25,16 +25,16 @@ h1, .section-title, .tl-year, .stats b, .project-num, .loader-track { letter-spa
 
 /* ---- 3. Materiales: vidrio con borde superior iluminado y profundidad según el tamaño ---- */
 .links, .loader-pill {
-  box-shadow: inset 0 1px 0 rgba(248, 250, 252, .08), 0 8px 24px rgba(2, 6, 23, .35);
+  box-shadow: inset 0 1px 0 rgb(var(--ink-rgb) / .08), 0 8px 24px rgb(var(--shadow-rgb) / calc(.35 * var(--shadow-strength)));
 }
 .stats li {
-  box-shadow: inset 0 1px 0 rgba(248, 250, 252, .06), 0 10px 28px rgba(2, 6, 23, .28);
+  box-shadow: inset 0 1px 0 rgb(var(--ink-rgb) / .06), 0 10px 28px rgb(var(--shadow-rgb) / calc(.28 * var(--shadow-strength)));
 }
 .project {               /* superficie grande = material más "grueso" */
-  background: rgba(30, 41, 59, .5);
+  background: rgb(var(--surface-rgb) / .5);
   backdrop-filter: blur(18px) saturate(140%);
   -webkit-backdrop-filter: blur(18px) saturate(140%);
-  box-shadow: inset 0 1px 0 rgba(248, 250, 252, .07), 0 24px 60px rgba(2, 6, 23, .45);
+  box-shadow: inset 0 1px 0 rgb(var(--ink-rgb) / .07), 0 24px 60px rgb(var(--shadow-rgb) / calc(.45 * var(--shadow-strength)));
 }
 .project-visual { box-shadow: inset 0 1px 0 rgba(248, 250, 252, .04); }
 
@@ -52,10 +52,10 @@ h1, .section-title, .tl-year, .stats b, .project-num, .loader-track { letter-spa
 @media (prefers-reduced-motion: reduce) { .project-visual.has-img img { transition: none; } }
 
 /* el menú fijo: sin línea dura debajo; un desvanecido suave donde se cruza con el contenido */
-.nav.is-scrolled { border-bottom-color: transparent; background: rgba(15, 23, 42, .62); backdrop-filter: blur(20px) saturate(160%); -webkit-backdrop-filter: blur(20px) saturate(160%); }
+.nav.is-scrolled { border-bottom-color: transparent; background: rgb(var(--bg-rgb) / var(--nav-opacity)); backdrop-filter: blur(20px) saturate(160%); -webkit-backdrop-filter: blur(20px) saturate(160%); }
 .nav::after {
   content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 24px; pointer-events: none;
-  background: linear-gradient(rgba(15, 23, 42, .5), rgba(15, 23, 42, .18) 45%, rgba(15, 23, 42, .04) 80%, transparent);
+  background: linear-gradient(rgb(var(--bg-rgb) / .5), rgb(var(--bg-rgb) / .18) 45%, rgb(var(--bg-rgb) / .04) 80%, transparent);
   opacity: 0; transition: opacity .4s;
 }
 .nav.is-scrolled::after { opacity: 1; }
@@ -63,13 +63,20 @@ h1, .section-title, .tl-year, .stats b, .project-num, .loader-track { letter-spa
 /* fundido inferior de la portada con degradado suavizado (sin borde visible) */
 .hero::after {
   background: linear-gradient(
-    rgba(15, 23, 42, 0) 0%, rgba(15, 23, 42, .03) 19%, rgba(15, 23, 42, .1) 34%, rgba(15, 23, 42, .22) 47%,
-    rgba(15, 23, 42, .38) 59%, rgba(15, 23, 42, .56) 70%, rgba(15, 23, 42, .74) 80%, rgba(15, 23, 42, .89) 90%, #0F172A 100%);
+    rgb(var(--bg-rgb) / 0) 0%, rgb(var(--bg-rgb) / .03) 19%, rgb(var(--bg-rgb) / .1) 34%, rgb(var(--bg-rgb) / .22) 47%,
+    rgb(var(--bg-rgb) / .38) 59%, rgb(var(--bg-rgb) / .56) 70%, rgb(var(--bg-rgb) / .74) 80%, rgb(var(--bg-rgb) / .89) 90%, var(--bg) 100%);
+}
+@media (max-width: 760px) {
+  [data-theme="light"] .hero::after {
+    height: min(280px, 45%);
+    background: linear-gradient(transparent, rgb(var(--bg-rgb) / .25) 15%, rgb(var(--bg-rgb) / .75) 34%,
+      rgb(var(--bg-rgb) / .93) 70%, var(--bg));
+  }
 }
 
 /* ---- 4. Ubicación: el menú marca la sección en la que estás ---- */
 .links { position: relative; }
-.links a.is-active { color: var(--text); background: rgba(248, 250, 252, .08); box-shadow: inset 0 1px 0 rgba(248, 250, 252, .08); }
+.links a.is-active { color: var(--text); background: rgb(var(--ink-rgb) / .08); box-shadow: inset 0 1px 0 rgb(var(--ink-rgb) / .08); }
 
 /* ---- 5. Movimiento: las cosas se "materializan" (desenfoque + opacidad + desplazamiento) ---- */
 .reveal { filter: blur(6px); transition: opacity .8s var(--ease), transform .8s var(--ease), filter .8s var(--ease); }
@@ -92,9 +99,9 @@ h1, .section-title, .tl-year, .stats b, .project-num, .loader-track { letter-spa
   .project:hover { transform: none; }
 }
 @media (prefers-reduced-transparency: reduce) {
-  .links, .nav.is-scrolled, .project, .loader-pill, .avail { background: #1E293B; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .links, .nav.is-scrolled, .project, .loader-pill, .avail, .theme-toggle { background: var(--surface); backdrop-filter: none; -webkit-backdrop-filter: none; }
 }
 @media (prefers-contrast: more) {
-  :root { --mut: rgba(248, 250, 252, .85); --line: rgba(248, 250, 252, .35); }
-  .links, .nav.is-scrolled, .project, .stats li { background: #0F172A; backdrop-filter: none; }
+  :root { --mut: rgb(var(--ink-rgb) / .85); --line: rgb(var(--ink-rgb) / .35); }
+  .links, .nav.is-scrolled, .project, .stats li { background: var(--bg); backdrop-filter: none; }
 }
