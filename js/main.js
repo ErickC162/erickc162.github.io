@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { ConvexGeometry } from 'three/addons/geometries/ConvexGeometry.js';
 
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -46,31 +45,78 @@ const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true,
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.05;
+renderer.toneMappingExposure = 1.0;
 
 const scene = new THREE.Scene();
-const pmrem = new THREE.PMREMGenerator(renderer);
-scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-scene.environmentIntensity = 0.55;
+scene.environment = createStudioEnvironment();
+scene.environmentIntensity = 0.5;
 
 const camera = new THREE.PerspectiveCamera(22, 1, 0.05, 20);
 
-// luz principal suave + contornos con la paleta
-scene.add(new THREE.HemisphereLight('#cbd5e1', '#0F172A', 0.6));
-const key = new THREE.DirectionalLight('#ffffff', 1.9); key.position.set(-1, 1.3, 2.2); scene.add(key);
-const rimV = new THREE.DirectionalLight('#8B5CF6', 3.2); rimV.position.set(-2.2, 1.1, -1.4); scene.add(rimV);
-const rimS = new THREE.DirectionalLight('#38BDF8', 3.0); rimS.position.set(2.2, 1.3, -1.4); scene.add(rimS);
+// La luz cálida entra de lado; el relleno más tenue conserva el volumen de la cara.
+scene.add(new THREE.HemisphereLight('#DDE9FF', '#26324B', 0.38));
+const key = new THREE.DirectionalLight('#FFE8D8', 2.8);
+key.position.set(-2.6, 1.7, 2.7);
+const fill = new THREE.DirectionalLight('#D6E5FF', 0.65);
+fill.position.set(2.3, 0.5, 2.1);
+const rimV = new THREE.DirectionalLight('#A283FF', 3.4);
+rimV.position.set(-1.9, 1.25, -1.65);
+const rimS = new THREE.DirectionalLight('#65CEFF', 3.2);
+rimS.position.set(1.7, 1.1, -1.65);
+scene.add(key, fill, rimV, rimS);
+
+// Paneles grandes para reflejos suaves, fuera de la escena visible.
+function createStudioEnvironment() {
+  const studio = new THREE.Scene();
+  studio.background = new THREE.Color('#384259');
+  const geometry = new THREE.PlaneGeometry();
+  const panels = [
+    { position: [-3, 2, 3], size: [2.5, 3.2], color: '#FFEBDC', intensity: 6.5 },
+    { position: [2.8, 0.7, 3], size: [1.4, 2.9], color: '#C8DFFF', intensity: 3.2 },
+    { position: [0.2, 3.7, -1.2], size: [3.2, 1.3], color: '#E1DCFF', intensity: 5.0 },
+  ];
+  for (const { position, size, color, intensity } of panels) {
+    const material = new THREE.MeshBasicMaterial({ color: new THREE.Color(color).multiplyScalar(intensity) });
+    const panel = new THREE.Mesh(geometry, material);
+    panel.position.set(...position);
+    panel.scale.set(...size, 1);
+    panel.lookAt(0, 0, 0);
+    studio.add(panel);
+  }
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  const environment = pmrem.fromScene(studio, 0.035).texture;
+  pmrem.dispose();
+  geometry.dispose();
+  for (const panel of studio.children) panel.material.dispose();
+  return environment;
+}
 
 /* ---------------------------------------------------------------- avatar */
 let avatar = null, mixer = null, bones = {}, actions = {}, height = 1;
 
-// capa interior negra: las caras internas que se ven por los huecos del cabello se pintan de negro
-function darkBackfaces(material) {
+function configureAvatarMaterial(material) {
   material.side = THREE.DoubleSide;
   material.onBeforeCompile = (shader) => {
-    shader.fragmentShader = shader.fragmentShader.replace(
-      '#include <dithering_fragment>',
-      `#include <dithering_fragment>
+    // La malla tiene una sola textura. La posición de reposo y el color
+    // separan piel, rizos y montura sin alterar las UV ni el rig.
+    shader.vertexShader = shader.vertexShader
+      .replace('#include <common>', '#include <common>\nvarying vec3 vAvatarRestPosition;')
+      .replace('#include <begin_vertex>', '#include <begin_vertex>\nvAvatarRestPosition = position;');
+    shader.fragmentShader = shader.fragmentShader
+      .replace('#include <common>', '#include <common>\nvarying vec3 vAvatarRestPosition;')
+      .replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
+        vec3 albedo = diffuseColor.rgb;
+        float skin = smoothstep(0.025, 0.11, albedo.r - albedo.b) * smoothstep(0.06, 0.23, albedo.r);
+        float dark = 1.0 - smoothstep(0.025, 0.075, dot(albedo, vec3(0.2126, 0.7152, 0.0722)));
+        float hair = dark * smoothstep(0.928, 0.962, vAvatarRestPosition.y);
+        float glasses = dark * smoothstep(0.032, 0.064, vAvatarRestPosition.z)
+          * smoothstep(0.887, 0.897, vAvatarRestPosition.y)
+          * (1.0 - smoothstep(0.918, 0.928, vAvatarRestPosition.y));
+        roughnessFactor = mix(roughnessFactor, 0.60, skin);
+        roughnessFactor = mix(roughnessFactor, 0.46, hair);
+        roughnessFactor = mix(roughnessFactor, 0.31, glasses);`)
+      .replace('#include <dithering_fragment>', `#include <dithering_fragment>
+        // Los huecos entre rizos muestran una capa interior oscura.
         if (!gl_FrontFacing) gl_FragColor = vec4(0.012, 0.012, 0.016, 1.0);`);
   };
   material.needsUpdate = true;
@@ -106,7 +152,7 @@ new GLTFLoader().load(
     avatar = gltf.scene;
     let skinned = null;
     avatar.traverse((o) => {
-      if (o.isSkinnedMesh) { skinned = o; o.frustumCulled = false; darkBackfaces(o.material); }
+      if (o.isSkinnedMesh) { skinned = o; o.frustumCulled = false; configureAvatarMaterial(o.material); }
       if (o.isBone) bones[o.name.replace('mixamorig', '')] = o;
     });
     scene.add(avatar);
