@@ -41,14 +41,11 @@ function finishLoading() {
 
 /* ---------------------------------------------------------------- escena */
 const canvas = document.getElementById('avatar');
-// En celulares (pantalla táctil o angosta) se dibuja a menor resolución y sin antialias:
-// es lo que más pesa en GPUs móviles y a ese tamaño la diferencia no se nota.
+// Calidad completa (resolución 2× como tope y bordes suavizados) también en celular.
+// El ahorro en celular viene de pausar fuera de pantalla y de dibujar a 30 cuadros por segundo.
 const isMobile = matchMedia('(pointer: coarse)').matches || innerWidth < 760;
-const renderer = new THREE.WebGLRenderer({
-  canvas, alpha: true, antialias: !isMobile,
-  powerPreference: isMobile ? 'default' : 'high-performance',
-});
-renderer.setPixelRatio(Math.min(devicePixelRatio, isMobile ? 1.25 : 1.5));
+const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.0;
@@ -217,8 +214,10 @@ onReady.push(() => {
   if (reduceMotion) return;
   setTimeout(() => playGesture('saludo', 0.35), 250);   // saluda al terminar la carga
 });
-// responde al presionar (no al soltar), como un botón físico
-canvas.addEventListener('pointerdown', () => { if (current === 'pose' && !reduceMotion) playGesture('saludo', 0.3); });
+// Con mouse saluda al presionar. En pantallas táctiles solo con un toque real ("click"):
+// al deslizar para bajar por la página no se dispara, así no saluda en cada desplazamiento.
+canvas.addEventListener('pointerdown', (e) => { if (e.pointerType === 'mouse' && current === 'pose' && !reduceMotion) playGesture('saludo', 0.3); });
+canvas.addEventListener('click', (e) => { if (e.pointerType !== 'mouse' && current === 'pose' && !reduceMotion) playGesture('saludo', 0.3); });
 
 /* ---------------------------------------------------------------- encuadre */
 function resize() {
