@@ -123,3 +123,11 @@ addEventListener('scroll', () => {
 addEventListener('resize', () => { layout(); onScroll(); });
 document.fonts?.ready.then(() => { layout(); onScroll(); });
 layout(); onScroll();
+
+/* ---------- imágenes de proyectos: se piden todas un poco antes de llegar a la sección ----------
+   (con carga diferida pura, las tarjetas del final del carrusel horizontal podían aparecer vacías) */
+new IntersectionObserver((entries, obs) => {
+  if (!entries[0].isIntersecting) return;
+  document.querySelectorAll('#proyectos img[loading="lazy"]').forEach((img) => { img.loading = 'eager'; });
+  obs.disconnect();
+}, { rootMargin: '150% 0px' }).observe(document.getElementById('proyectos'));

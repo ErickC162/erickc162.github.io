@@ -20,15 +20,21 @@ if (!reduceMotion && canvas && items.length) {
   const pointer = { x: -1e4, y: -1e4, vx: 0, vy: 0, inside: false, t: 0 };
   let drag = null;
 
+  const isMobile = matchMedia('(pointer: coarse)').matches || innerWidth < 760;
+  let lastW = 0, lastH = 0;
   function resize() {
     const r = stage.getBoundingClientRect();
-    dpr = Math.min(devicePixelRatio || 1, 2);
+    // en celular el navegador cambia la altura al esconder la barra: solo se recalcula si cambió de verdad
+    if (Math.abs(r.width - lastW) < 1 && Math.abs(r.height - lastH) < 60 && balls.length) return Math.sqrt((W * H * 0.42) / (items.length * Math.PI));
+    lastW = r.width; lastH = r.height;
+    dpr = Math.min(devicePixelRatio || 1, isMobile ? 1.5 : 2);
     W = r.width; H = r.height;
     canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     // radio según el área disponible, para que todas quepan con holgura
     const base = Math.sqrt((W * H * 0.42) / (items.length * Math.PI));
-    balls.forEach((b) => { b.r = base * b.k; b.x = Math.min(Math.max(b.x, b.r), W - b.r); b.y = Math.min(b.y, H - b.r); });
+    balls.forEach((b) => { b.r = base * b.k; b.x = Math.min(Math.max(b.x, b.r), W - b.r); b.y = Math.min(b.y, H - b.r); b.sprite = null; });
+    wake();
     return base;
   }
 
@@ -87,39 +93,59 @@ if (!reduceMotion && canvas && items.length) {
     }
   }
 
+  // Cada esfera se dibuja UNA vez en una imagen aparte (con brillo, degradado y nombre);
+  // en cada cuadro solo se copia esa imagen. Las sombras de canvas son lo más caro de dibujar.
+  function makeSprite(b) {
+    const [c1, c2, glow] = COLORS[b.g] || COLORS.tool;
+    const pad = Math.ceil(b.r * 0.35), size = Math.ceil((b.r + pad) * 2);
+    const off = document.createElement('canvas');
+    off.width = Math.ceil(size * dpr); off.height = Math.ceil(size * dpr);
+    const g = off.getContext('2d');
+    g.scale(dpr, dpr);
+    const cx = size / 2, cy = size / 2, r = b.r;
+    g.save();
+    g.shadowColor = glow; g.shadowBlur = Math.min(22, r * 0.4);
+    const grad = g.createRadialGradient(cx - r * 0.35, cy - r * 0.4, r * 0.1, cx, cy, r);
+    grad.addColorStop(0, c1); grad.addColorStop(1, c2);
+    g.fillStyle = grad; g.beginPath(); g.arc(cx, cy, r, 0, Math.PI * 2); g.fill();
+    g.restore();
+    g.strokeStyle = 'rgba(248,250,252,.18)'; g.lineWidth = 1;
+    g.beginPath(); g.arc(cx, cy, r - 0.5, 0, Math.PI * 2); g.stroke();
+    g.fillStyle = 'rgba(255,255,255,.16)';
+    g.beginPath(); g.ellipse(cx - r * 0.32, cy - r * 0.45, r * 0.38, r * 0.2, -0.5, 0, Math.PI * 2); g.fill();
+    const fs = Math.min(r * 0.42, (r * 1.6) / Math.max(4, b.label.length * 0.62));
+    g.font = `700 ${fs}px "Space Grotesk", Inter, sans-serif`;
+    g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.shadowColor = 'rgba(2,6,23,.55)'; g.shadowBlur = 6;
+    g.fillStyle = '#F8FAFC'; g.fillText(b.label, cx, cy + 1);
+    b.sprite = off; b.spriteSize = size;
+  }
+
   function draw() {
     ctx.clearRect(0, 0, W, H);
     for (const b of balls) {
-      const [c1, c2, glow] = COLORS[b.g] || COLORS.tool;
-      ctx.save();
-      ctx.shadowColor = glow; ctx.shadowBlur = b === drag?.ball ? 36 : 22;
-      const grad = ctx.createRadialGradient(b.x - b.r * 0.35, b.y - b.r * 0.4, b.r * 0.1, b.x, b.y, b.r);
-      grad.addColorStop(0, c1); grad.addColorStop(1, c2);
-      ctx.fillStyle = grad;
-      ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2); ctx.fill();
-      ctx.restore();
-      // contorno de cristal y reflejo
-      ctx.strokeStyle = 'rgba(248,250,252,.18)'; ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.arc(b.x, b.y, b.r - 0.5, 0, Math.PI * 2); ctx.stroke();
-      ctx.fillStyle = 'rgba(255,255,255,.16)';
-      ctx.beginPath(); ctx.ellipse(b.x - b.r * 0.32, b.y - b.r * 0.45, b.r * 0.38, b.r * 0.2, -0.5, 0, Math.PI * 2); ctx.fill();
-      // nombre
-      const size = Math.min(b.r * 0.42, (b.r * 1.6) / Math.max(4, b.label.length * 0.62));
-      ctx.font = `700 ${size}px "Space Grotesk", Inter, sans-serif`;
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillStyle = '#F8FAFC';
-      ctx.shadowColor = 'rgba(2,6,23,.55)'; ctx.shadowBlur = 6;
-      ctx.fillText(b.label, b.x, b.y + 1);
-      ctx.shadowBlur = 0;
+      if (!b.sprite) makeSprite(b);
+      const s = b.spriteSize * (b === drag?.ball ? 1.06 : 1);
+      ctx.drawImage(b.sprite, b.x - s / 2, b.y - s / 2, s, s);
     }
   }
 
+  // la animación se duerme cuando todo está quieto y despierta al tocar o al volver a la sección
+  let running = false, calm = 0;
+  function wake() { calm = 0; if (!running && visible && !document.hidden) { running = true; last = 0; requestAnimationFrame(loop); } }
+
   function loop(t) {
-    if (!visible) { last = 0; return; }
+    if (!visible || document.hidden) { running = false; last = 0; return; }
     const dt = Math.min(0.033, last ? (t - last) / 1000 : 0.016);
     last = t;
     for (let k = 0; k < 3; k++) step(dt / 3);   // subpasos para choques estables
     draw();
+    // quieta = no se movió más de un tercio de píxel desde el cuadro anterior
+    let moved = 0;
+    for (const b of balls) { moved = Math.max(moved, Math.abs(b.x - (b.px ?? 1e9)), Math.abs(b.y - (b.py ?? 1e9))); b.px = b.x; b.py = b.y; }
+    const moving = drag || moved > 0.35;
+    calm = moving ? 0 : calm + 1;
+    if (calm > 45) { running = false; last = 0; return; }   // ~0,75 s quietas: deja de animar
     requestAnimationFrame(loop);
   }
 
@@ -130,6 +156,7 @@ if (!reduceMotion && canvas && items.length) {
     pointer.vx = (p.x - pointer.x) / dt; pointer.vy = (p.y - pointer.y) / dt;
     pointer.vx = Math.max(-2500, Math.min(2500, pointer.vx)); pointer.vy = Math.max(-2500, Math.min(2500, pointer.vy));
     pointer.x = p.x; pointer.y = p.y; pointer.t = now; pointer.inside = true;
+    if (Math.hypot(pointer.vx, pointer.vy) > 40) wake();
     if (drag) {
       const b = drag.ball;
       b.vx = (p.x - drag.ox - b.x) / dt; b.vy = (p.y - drag.oy - b.y) / dt;   // al soltar conserva la velocidad
@@ -142,6 +169,7 @@ if (!reduceMotion && canvas && items.length) {
     const b = balls.slice().reverse().find((s) => Math.hypot(s.x - p.x, s.y - p.y) < s.r);
     if (!b) return;
     drag = { ball: b, ox: p.x - b.x, oy: p.y - b.y };
+    wake();
     canvas.setPointerCapture(e.pointerId);
     canvas.classList.add('is-dragging');
   });
@@ -159,10 +187,11 @@ if (!reduceMotion && canvas && items.length) {
     const was = visible;
     visible = e.isIntersecting;
     if (visible && !started) { started = true; spawn(); }
-    if (visible && !was) requestAnimationFrame(loop);
+    if (visible && !was) wake();
   }, { threshold: 0.25 }).observe(stage);
   addEventListener('resize', () => { if (started) resize(); });
-  document.fonts?.ready.then(() => { if (started) draw(); });
+  document.fonts?.ready.then(() => { balls.forEach((b) => { b.sprite = null; }); if (started) draw(); });
+  document.addEventListener('visibilitychange', wake);
 }
 
 // los datos de contacto pendientes no deben quedar como enlaces rotos

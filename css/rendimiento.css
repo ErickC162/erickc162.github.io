@@ -1,0 +1,36 @@
+/* =====================================================================
+   Rendimiento. Se carga al final y solo quita costo, no cambia el diseño.
+   Lo más caro para un celular: los desenfoques de fondo (backdrop-filter) y los
+   filtros de desenfoque animados, porque se recalculan en cada cuadro del scroll.
+   ===================================================================== */
+
+/* sombra bajo las tarjetas: un degradado suave en vez de un filtro de desenfoque */
+.project.flip::before {
+  filter: none;
+  background: radial-gradient(closest-side, rgb(var(--shadow-rgb, 2 6 23) / .55), rgb(var(--shadow-rgb, 2 6 23) / .2) 55%, transparent);
+  height: 26%; bottom: -8%;
+}
+.project.flip.is-turning::before { animation: flipShadowLite 1.05s cubic-bezier(.3, .7, .3, 1); }
+@keyframes flipShadowLite { 35% { opacity: .35; transform: translateY(26px) scale(.82); } }
+
+/* el menú se desenfoca menos (mismo aspecto, la mitad de trabajo) */
+.nav.is-scrolled { backdrop-filter: blur(12px) saturate(150%); -webkit-backdrop-filter: blur(12px) saturate(150%); }
+
+/* ---------- celulares y pantallas táctiles ---------- */
+@media (pointer: coarse), (max-width: 760px) {
+  /* sin desenfoque de fondo: fondos casi sólidos con el mismo color */
+  .nav.is-scrolled, .links, .flip-btn, .avail, .loader-pill, .theme-toggle, .project, .stats li, .contact-item {
+    backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+  }
+  .nav.is-scrolled { background: rgb(var(--bg-rgb) / .94); }
+  .flip-btn { background: rgb(var(--bg-rgb) / .85); }
+
+  /* las apariciones al hacer scroll: solo fundido y desplazamiento, sin desenfoque */
+  .reveal, .reveal.is-in { filter: none !important; }
+  .reveal { transition: opacity .6s var(--ease), transform .6s var(--ease); }
+  .role-word, .role-word:not(.is-on) { filter: none !important; }
+
+  /* el giro de tarjeta sin el brillo en pantalla completa (el canto luminoso se mantiene) */
+  .flip-front::after, .flip-back::after { display: none; }
+  .flip-inner::after { box-shadow: 0 0 0 1px rgba(139, 92, 246, .55), 0 0 18px 2px rgba(139, 92, 246, .45); }
+}

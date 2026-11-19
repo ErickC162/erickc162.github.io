@@ -41,8 +41,14 @@ function finishLoading() {
 
 /* ---------------------------------------------------------------- escena */
 const canvas = document.getElementById('avatar');
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+// En celulares (pantalla táctil o angosta) se dibuja a menor resolución y sin antialias:
+// es lo que más pesa en GPUs móviles y a ese tamaño la diferencia no se nota.
+const isMobile = matchMedia('(pointer: coarse)').matches || innerWidth < 760;
+const renderer = new THREE.WebGLRenderer({
+  canvas, alpha: true, antialias: !isMobile,
+  powerPreference: isMobile ? 'default' : 'high-performance',
+});
+renderer.setPixelRatio(Math.min(devicePixelRatio, isMobile ? 1.25 : 1.5));
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.0;
@@ -256,7 +262,20 @@ function addWorldRotation(bone, yaw, pitch) {
 const clock = new THREE.Clock();
 const clamp = THREE.MathUtils.clamp;
 let yaw = 0, pitch = 0, follow = 1;
-function frame() {
+// el avatar solo se anima mientras la portada está en pantalla y la pestaña visible
+let heroVisible = true, running = false, lastDraw = 0;
+const FRAME_MS = isMobile ? 1000 / 30 : 0;            // en celular basta con 30 cuadros por segundo
+function startLoop() {
+  if (running || !heroVisible || document.hidden) return;
+  running = true; clock.getDelta(); requestAnimationFrame(frame);
+}
+new IntersectionObserver(([e]) => { heroVisible = e.isIntersecting; startLoop(); }, { threshold: 0 }).observe(canvas);
+document.addEventListener('visibilitychange', startLoop);
+function frame(now) {
+  if (!heroVisible || document.hidden) { running = false; return; }
+  requestAnimationFrame(frame);
+  if (FRAME_MS && now - lastDraw < FRAME_MS - 2) return;
+  lastDraw = now;
   const dt = Math.min(clock.getDelta(), 0.05);
   const t = clock.elapsedTime;
   if (mixer) mixer.update(dt);
@@ -283,9 +302,8 @@ function frame() {
     avatar.rotation.y = yaw * 0.12;                 // el cuerpo acompaña un poco
   }
   renderer.render(scene, camera);
-  requestAnimationFrame(frame);
 }
-frame();
+startLoop();
 
 /* ---------------------------------------------------------------- rol rotativo */
 const words = [...document.querySelectorAll('.role-word')];
