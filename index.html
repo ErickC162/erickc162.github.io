@@ -1,350 +1,91 @@
-<!doctype html>
-<html lang="es">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Erick Carcelén · Desarrollador de software</title>
-<meta name="description" content="Portafolio de Erick Carcelén, desarrollador de software y datos en Quito, Ecuador.">
-<meta name="theme-color" content="#0F172A">
-<script src="js/tema.js?v=2"></script>
-<!-- ícono de la pestaña: versión oscura con el navegador en modo oscuro y clara en modo claro -->
-<link rel="icon" type="image/png" sizes="32x32" href="assets/icons/icono-claro-32.png" media="(prefers-color-scheme: light)">
-<link rel="icon" type="image/png" sizes="32x32" href="assets/icons/icono-oscuro-32.png" media="(prefers-color-scheme: dark)">
-<link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icono-claro-192.png" media="(prefers-color-scheme: light)">
-<link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icono-oscuro-192.png" media="(prefers-color-scheme: dark)">
-<link rel="apple-touch-icon" href="assets/icons/apple-oscuro.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=8">
-<link rel="stylesheet" href="css/secciones.css?v=6">
-<link rel="stylesheet" href="css/pulido.css?v=6">
-<link rel="stylesheet" href="css/tarjetas.css?v=12">
-<link rel="stylesheet" href="css/final.css?v=3">
-<link rel="stylesheet" href="css/rendimiento.css?v=1">
-<script type="importmap">
-{ "imports": {
-  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
-  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
-} }
-</script>
-</head>
-<body class="is-loading">
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Erick Carcelén · Desarrollador de software</title><meta name="description" content="Portafolio de Erick Carcelén, desarrollador de software y datos en Quito, Ecuador."><meta name="theme-color" content="#0F172A"><meta property="og:title" content="Erick Carcelén · Desarrollador de software"><meta property="og:description" content="Portafolio de Erick Carcelén, desarrollador de software y datos en Quito, Ecuador."><meta property="og:type" content="website"><!-- el tema se fija antes de pintar para que el modo claro no parpadee --><script>(() => {
+  const root = document.documentElement;
+  const storageKey = 'portfolio-theme';
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  let changing = false;
 
-  <!-- ============ Pantalla de carga ============ -->
-  <div class="loader" id="loader" aria-live="polite">
-    <div class="loader-marquee" aria-hidden="true">
-      <div class="loader-track">
-        <span>SOFTWARE</span><i>✦</i><span>DATOS</span><i>✦</i><span>INTELIGENCIA ARTIFICIAL</span><i>✦</i>
-        <span>SOFTWARE</span><i>✦</i><span>DATOS</span><i>✦</i><span>INTELIGENCIA ARTIFICIAL</span><i>✦</i>
-      </div>
-    </div>
-    <div class="loader-pill" id="loaderPill">
-      <span class="loader-label" id="loaderLabel">Cargando</span>
-      <span class="loader-pct"><span id="loaderPct">0</span>%</span>
-      <span class="loader-bar"><span id="loaderBar"></span></span>
-    </div>
-  </div>
+  try {
+    if (localStorage.getItem(storageKey) === 'light') root.dataset.theme = 'light';
+  } catch {
+    // El modo también funciona con el almacenamiento bloqueado.
+  }
 
-  <!-- ============ Menú ============ -->
-  <header class="nav">
-    <a class="logo" href="#inicio" aria-label="Erick Carcelén · Inicio">
-      <img src="assets/icons/icono-claro-192.png" alt="" width="44" height="44">
-      <img src="assets/icons/icono-oscuro-192.png" alt="" width="44" height="44" class="logo-light">
-    </a>
-    <nav class="links" aria-label="Principal">
-      <a href="#sobre"><span data-t="Sobre mí">Sobre mí</span></a>
-      <a href="#trayectoria"><span data-t="Trayectoria">Trayectoria</span></a>
-      <a href="#proyectos"><span data-t="Proyectos">Proyectos</span></a>
-      <a href="#tecnologias"><span data-t="Stack">Stack</span></a>
-      <a href="#contacto"><span data-t="Contacto">Contacto</span></a>
-    </nav>
-    <div class="nav-actions">
-      <button class="theme-toggle" type="button" aria-label="Modo claro" aria-pressed="false" hidden>
-        <svg class="theme-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="4"/>
-          <path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
-        </svg>
-        <svg class="theme-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true">
-          <path d="M20.8 15.1A9 9 0 0 1 8.9 3.2a9.2 9.2 0 1 0 11.9 11.9Z"/>
-        </svg>
-      </button>
-      <a class="nav-cta" href="https://github.com/ErickC162" target="_blank" rel="noopener">GitHub ↗</a>
-    </div>
-  </header>
+  document.addEventListener('readystatechange', () => {
+    const button = document.querySelector('.theme-toggle');
+    const themeColor = document.querySelector('meta[name="theme-color"]');
 
-  <main>
-    <!-- ============ Portada ============ -->
-    <section class="hero" id="inicio">
-      <div class="hero-glow" aria-hidden="true"></div>
-      <canvas id="avatar" aria-label="Avatar 3D de Erick Carcelén"></canvas>
+    function syncControl() {
+      const light = root.dataset.theme === 'light';
+      button.setAttribute('aria-pressed', String(light));
+      button.title = light ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro';
+      const background = getComputedStyle(root).backgroundColor;
+      if (background !== 'rgba(0, 0, 0, 0)') themeColor.content = background;
+    }
 
-      <div class="hero-name">
-        <p class="hello">Hola, soy</p>
-        <h1><span class="line">ERICK</span><span class="line accent">CARCELÉN</span></h1>
-      </div>
+    function applyTheme(theme) {
+      root.dataset.theme = theme;
+      syncControl();
+      try {
+        localStorage.setItem(storageKey, theme);
+      } catch {
+        // Si no se puede guardar, se conserva la elección durante esta visita.
+      }
+    }
 
-      <div class="hero-role">
-        <p class="role-small">Desarrollador de</p>
-        <div class="role-swap" aria-live="off">
-          <span class="role-word is-on">SOFTWARE</span>
-          <span class="role-word">DATOS</span>
-          <span class="role-word">IA</span>
-        </div>
-        <p class="role-note">Estudiante de la EPN · Pasante en WellPerf</p>
-      </div>
+    // El velo también parte del botón en navegadores sin View Transitions.
+    async function revealWithVeil(theme) {
+      const veil = document.createElement('div');
+      if (!veil.animate) {
+        applyTheme(theme);
+        return;
+      }
 
-      <a class="scroll-hint" href="#sobre"><span></span>Desliza</a>
-    </section>
+      veil.className = 'theme-veil';
+      veil.dataset.theme = theme;
+      veil.setAttribute('aria-hidden', 'true');
+      document.body.append(veil);
 
-    <!-- ============ Sobre mí ============ -->
-    <section class="about wrap" id="sobre">
-      <p class="eyebrow reveal">Sobre mí</p>
-      <p class="about-lead reveal">
-        Me gusta llevar una idea <em>de cero a algo que la gente usa</em>: un juego en una feria,
-        un asistente que atiende clientes o una herramienta que un equipo usa todos los días.
-      </p>
-      <div class="about-grid">
-        <p class="about-text reveal">
-          Estudio en la Escuela Politécnica Nacional, en Quito, y hago mis prácticas en el área de TI
-          de WellPerf. Me muevo entre la web, el escritorio, los videojuegos y la inteligencia artificial,
-          con un interés especial en los datos.
-        </p>
-        <ul class="stats">
-          <li class="reveal"><b data-count="5">5</b><span>Proyectos destacados</span></li>
-          <li class="reveal"><b data-count="25" data-suffix="+">25+</b><span>Repositorios en GitHub</span></li>
-          <li class="reveal"><b data-count="4">4</b><span>Plataformas: web, móvil, escritorio y juegos</span></li>
-        </ul>
-      </div>
-    </section>
+      try {
+        const [reveal] = veil.getAnimations?.() ?? [];
+        if (reveal) await reveal.finished;
+        applyTheme(theme);
+        await veil.animate({ opacity: [1, 0] }, { duration: 280, easing: 'ease-out', fill: 'forwards' }).finished;
+      } finally {
+        veil.remove();
+      }
+    }
 
-    <!-- ============ Trayectoria ============ -->
-    <section class="career wrap" id="trayectoria">
-      <h2 class="section-title reveal">Mi <span>trayectoria</span></h2>
-      <div class="timeline" id="timeline">
-        <div class="timeline-line" aria-hidden="true"><span id="timelineFill"></span></div>
+    button.addEventListener('click', async () => {
+      if (changing) return;
+      const theme = root.dataset.theme === 'light' ? 'dark' : 'light';
+      if (reducedMotion.matches) {
+        applyTheme(theme);
+        return;
+      }
 
-        <article class="tl-item reveal">
-          <div class="tl-role"><h3>Estudiante de Ingeniería</h3><p>Escuela Politécnica Nacional</p><small>Mayo 2021 – hoy</small></div>
-          <div class="tl-year"><span class="tl-dot"></span>2021</div>
-          <p class="tl-desc">Carrera de pregrado en Quito. Bases de programación, estructuras de datos, bases de datos y recuperación de información.</p>
-        </article>
+      const rect = button.getBoundingClientRect();
+      const x = rect.left + rect.width / 2;
+      const y = rect.top + rect.height / 2;
+      const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+      root.style.setProperty('--theme-origin', `${x}px ${y}px`);
+      root.style.setProperty('--theme-radius', `${Math.ceil(radius)}px`);
+      changing = true;
 
-        <article class="tl-item reveal">
-          <div class="tl-role"><h3>Pasante de TI</h3><p>WellPerf</p><small>Julio 2026 – hoy</small></div>
-          <div class="tl-year"><span class="tl-dot"></span>2026</div>
-          <p class="tl-desc">Desarrollo de herramientas internas y de un juego interactivo para ferias del sector petrolero, soporte técnico de nivel 1 a los usuarios y otras tareas del área de TI.</p>
-        </article>
+      try {
+        if (typeof document.startViewTransition === 'function') {
+          await document.startViewTransition(() => applyTheme(theme)).finished;
+        } else {
+          await revealWithVeil(theme);
+        }
+      } catch {
+        if (root.dataset.theme !== theme) applyTheme(theme);
+      } finally {
+        changing = false;
+      }
+    });
 
-        <article class="tl-item reveal">
-          <div class="tl-role"><h3>Desarrollo independiente</h3><p>Proyectos propios</p><small>En paralelo, 2026 – hoy</small></div>
-          <div class="tl-year"><span class="tl-dot"></span>Hoy</div>
-          <p class="tl-desc">Productos completos por cuenta propia: un sitio de minijuegos de fútbol, una app de escritorio para cámaras de seguridad y un asistente de WhatsApp con IA.</p>
-        </article>
-      </div>
-    </section>
-
-    <!-- ============ Proyectos (desplazamiento horizontal en escritorio) ============ -->
-    <section class="work" id="proyectos">
-      <div class="work-sticky">
-        <div class="work-head wrap">
-          <h2 class="section-title">Mis <span>proyectos</span></h2>
-          <p class="work-count"><span id="workIndex">01</span> / 05</p>
-        </div>
-        <div class="work-track" id="workTrack">
-
-          <article class="project flip">
-            <div class="flip-inner">
-              <div class="flip-back" inert>
-                <div class="project-info">
-                  <span class="project-num">01</span>
-                  <div><h3>Peloteo</h3><p class="project-kind">Proyecto personal · Web</p></div>
-                </div>
-                <p class="project-desc">Minijuegos diarios sobre el fútbol ecuatoriano: palabra del día, tres en raya con futbolistas, campeones e históricos. Sin cuentas, sin publicidad y sin cookies; cada dato se verifica con su fuente.</p>
-                <div class="project-tools"><span>Herramientas</span><p>React, TypeScript, Vite, Prisma, PostgreSQL, Cloudflare Pages</p></div>
-                <div class="flip-actions">
-                <a class="project-link" href="https://peloteo-nij.pages.dev/" target="_blank" rel="noopener">Ver sitio <b>↗</b></a>
-                  <button class="flip-btn flip-close" type="button" aria-label="Volver a la imagen de Peloteo"><span>Volver</span><i aria-hidden="true">↺</i></button>
-                </div>
-              </div>
-              <div class="flip-front">
-                <div class="flip-media" role="img" aria-label="Peloteo en escritorio y celular: portada con los juegos del día, palabra del día y tres en raya">
-                  <img src="assets/proyectos/peloteo.webp?v=3" alt="" width="1600" height="1000" loading="lazy" decoding="async">
-                  <img class="flip-media-light" src="assets/proyectos/peloteo-claro.webp" alt="" width="1600" height="1000" loading="lazy" decoding="async" fetchpriority="low">
-                </div>
-                <div class="flip-meta">
-                  <span class="project-num">01</span>
-                  <div><h3>Peloteo</h3><p class="project-kind">Proyecto personal · Web</p></div>
-                </div>
-                <button class="flip-btn flip-open" type="button" aria-label="Ver detalles de Peloteo" aria-expanded="false"><span>Detalles</span><i aria-hidden="true">↻</i></button>
-              </div>
-            </div>
-          </article>
-
-          <article class="project flip">
-            <div class="flip-inner">
-              <div class="flip-back" inert>
-                <div class="project-info">
-                  <span class="project-num">02</span>
-                  <div><h3>Asistente de WhatsApp con IA</h3><p class="project-kind">MVP · Backend e IA</p></div>
-                </div>
-                <p class="project-desc">Atiende a los clientes de una cadena de lavanderías: sucursales cercanas, promociones y pedidos a domicilio. Incluye un panel web en tiempo real para los asesores y pruebas de seguridad contra ataques.</p>
-                <div class="project-tools"><span>Herramientas</span><p>Python, FastAPI, Gemini, React, Tailwind, WhatsApp Cloud API</p></div>
-                <div class="flip-actions">
-                  <button class="flip-btn flip-close" type="button" aria-label="Volver a la imagen de Asistente de WhatsApp con IA"><span>Volver</span><i aria-hidden="true">↺</i></button>
-                </div>
-              </div>
-              <div class="flip-front">
-                <div class="flip-media" role="img" aria-label="Panel de atención al cliente con métricas en tiempo real y una conversación de ejemplo en WhatsApp con el asistente">
-                  <img src="assets/proyectos/asistente.webp?v=1" alt="" width="1600" height="1000" loading="lazy" decoding="async">
-                  <img class="flip-media-light" src="assets/proyectos/asistente-claro.webp" alt="" width="1600" height="1000" loading="lazy" decoding="async" fetchpriority="low">
-                </div>
-                <div class="flip-meta">
-                  <span class="project-num">02</span>
-                  <div><h3>Asistente de WhatsApp con IA</h3><p class="project-kind">MVP · Backend e IA</p></div>
-                </div>
-                <button class="flip-btn flip-open" type="button" aria-label="Ver detalles de Asistente de WhatsApp con IA" aria-expanded="false"><span>Detalles</span><i aria-hidden="true">↻</i></button>
-              </div>
-            </div>
-          </article>
-
-          <article class="project flip">
-            <div class="flip-inner">
-              <div class="flip-back" inert>
-                <div class="project-info">
-                  <span class="project-num">03</span>
-                  <div><h3>Oil &amp; Power</h3><p class="project-kind">WellPerf · Videojuego</p></div>
-                </div>
-                <p class="project-desc">Juego para el stand de feria: el jugador interpreta registros de pozo (Gamma Ray y Resistividad) para encontrar el yacimiento. Física real, audio generado por código y pantalla táctil.</p>
-                <div class="project-tools"><span>Herramientas</span><p>Godot 4, GDScript, shaders, física Verlet</p></div>
-                <div class="flip-actions">
-                  <button class="flip-btn flip-close" type="button" aria-label="Volver a la imagen de Oil & Power"><span>Volver</span><i aria-hidden="true">↺</i></button>
-                </div>
-              </div>
-              <div class="flip-front">
-                <div class="flip-media" role="img" aria-label="Oil &amp; Power en una pantalla táctil de feria: pozo con capas reveladas y registro de Gamma Ray y Resistividad">
-                  <img src="assets/proyectos/oilpower.webp?v=1" alt="" width="1600" height="1000" loading="lazy" decoding="async">
-                  <img class="flip-media-light" src="assets/proyectos/oilpower-claro.webp" alt="" width="1600" height="1000" loading="lazy" decoding="async" fetchpriority="low">
-                </div>
-                <div class="flip-meta">
-                  <span class="project-num">03</span>
-                  <div><h3>Oil &amp; Power</h3><p class="project-kind">WellPerf · Videojuego</p></div>
-                </div>
-                <button class="flip-btn flip-open" type="button" aria-label="Ver detalles de Oil & Power" aria-expanded="false"><span>Detalles</span><i aria-hidden="true">↻</i></button>
-              </div>
-            </div>
-          </article>
-
-          <article class="project flip">
-            <div class="flip-inner">
-              <div class="flip-back" inert>
-                <div class="project-info">
-                  <span class="project-num">04</span>
-                  <div><h3>Plataforma interna</h3><p class="project-kind">WellPerf · Web full-stack</p></div>
-                </div>
-                <p class="project-desc">Portal de módulos para el personal: credenciales digitales, asistencia, hojas de vida, compras y requisiciones, con inicio de sesión corporativo y reportes en PDF. Código privado de la empresa.</p>
-                <div class="project-tools"><span>Herramientas</span><p>Next.js, Tailwind, PostgreSQL, Microsoft Entra ID</p></div>
-                <div class="flip-actions">
-                  <button class="flip-btn flip-close" type="button" aria-label="Volver a la imagen de Plataforma interna"><span>Volver</span><i aria-hidden="true">↺</i></button>
-                </div>
-              </div>
-              <div class="flip-front">
-                <div class="flip-media" role="img" aria-label="Portal de módulos de WellPerf en el navegador y una credencial digital de ejemplo">
-                  <img src="assets/proyectos/plataforma.webp?v=2" alt="" width="1600" height="1000" loading="lazy" decoding="async">
-                  <img class="flip-media-light" src="assets/proyectos/plataforma-claro.webp" alt="" width="1600" height="1000" loading="lazy" decoding="async" fetchpriority="low">
-                </div>
-                <div class="flip-meta">
-                  <span class="project-num">04</span>
-                  <div><h3>Plataforma interna</h3><p class="project-kind">WellPerf · Web full-stack</p></div>
-                </div>
-                <button class="flip-btn flip-open" type="button" aria-label="Ver detalles de Plataforma interna" aria-expanded="false"><span>Detalles</span><i aria-hidden="true">↻</i></button>
-              </div>
-            </div>
-          </article>
-
-          <article class="project flip">
-            <div class="flip-inner">
-              <div class="flip-back" inert>
-                <div class="project-info">
-                  <span class="project-num">05</span>
-                  <div><h3>ARGOS</h3><p class="project-kind">Proyecto personal · Escritorio</p></div>
-                </div>
-                <p class="project-desc">App de escritorio para ver y mover cámaras de seguridad en vivo, con avisos a Telegram cuando detecta a una persona. Se distribuye como un solo ejecutable.</p>
-                <div class="project-tools"><span>Herramientas</span><p>Python, RTSP, Telegram Bot API, PyInstaller</p></div>
-                <div class="flip-actions">
-                  <button class="flip-btn flip-close" type="button" aria-label="Volver a la imagen de ARGOS"><span>Volver</span><i aria-hidden="true">↺</i></button>
-                </div>
-              </div>
-              <div class="flip-front">
-                <div class="flip-media" role="img" aria-label="ARGOS mostrando cuatro cámaras de ejemplo y un aviso de persona detectada en Telegram">
-                  <img src="assets/proyectos/argos.webp?v=1" alt="" width="1600" height="1000" loading="lazy" decoding="async">
-                  <img class="flip-media-light" src="assets/proyectos/argos-claro.webp" alt="" width="1600" height="1000" loading="lazy" decoding="async" fetchpriority="low">
-                </div>
-                <div class="flip-meta">
-                  <span class="project-num">05</span>
-                  <div><h3>ARGOS</h3><p class="project-kind">Proyecto personal · Escritorio</p></div>
-                </div>
-                <button class="flip-btn flip-open" type="button" aria-label="Ver detalles de ARGOS" aria-expanded="false"><span>Detalles</span><i aria-hidden="true">↻</i></button>
-              </div>
-            </div>
-          </article>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- ============ Tecnologías ============ -->
-    <section class="stack-sec" id="tecnologias">
-      <div class="wrap stack-head">
-        <h2 class="section-title reveal">Mi <span>stack</span></h2>
-        <p class="stack-hint reveal">Arrástralas, lánzalas o empújalas</p>
-      </div>
-      <div class="stack-stage" id="stackStage">
-        <canvas id="stackCanvas" aria-hidden="true"></canvas>
-        <ul class="stack-list" id="stackList" aria-label="Tecnologías que uso">
-          <li data-g="lang">Python</li><li data-g="lang">TypeScript</li><li data-g="lang">JavaScript</li>
-          <li data-g="web">React</li><li data-g="web">Next.js</li><li data-g="back">FastAPI</li>
-          <li data-g="back">Node.js</li><li data-g="data">PostgreSQL</li><li data-g="data">Prisma</li>
-          <li data-g="web">Tailwind</li><li data-g="game">Godot</li><li data-g="web">Three.js</li>
-          <li data-g="lang">Java</li><li data-g="lang">Kotlin</li><li data-g="lang">Go</li>
-          <li data-g="lang">C</li><li data-g="data">SQL</li><li data-g="ai">Gemini</li>
-          <li data-g="tool">Git</li><li data-g="tool">Cloudflare</li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- ============ Contacto ============ -->
-    <section class="contact wrap" id="contacto">
-      <h2 class="contact-title reveal">Hablemos<span>.</span></h2>
-      <p class="contact-lead reveal">¿Tienes un proyecto, una práctica o una idea? Escríbeme y te respondo pronto.</p>
-      <div class="contact-grid">
-        <div class="contact-item reveal">
-          <h3>Correo</h3>
-          <a class="contact-big contact-mail" href="mailto:erickedu2002@hotmail.com">erickedu2002<wbr>@hotmail.com</a>
-        </div>
-        <div class="contact-item reveal">
-          <h3>Ubicación</h3>
-          <p class="contact-big">Quito, Ecuador</p>
-        </div>
-        <div class="contact-item reveal">
-          <h3>Redes</h3>
-          <ul class="contact-social">
-            <li><a href="https://github.com/ErickC162" target="_blank" rel="noopener">GitHub <span>↗</span></a></li>
-            <li><a href="https://www.linkedin.com/in/erick-carcel%C3%A9n/" target="_blank" rel="noopener">LinkedIn <span>↗</span></a></li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <footer class="site-footer wrap">
-      <p>Diseñado y desarrollado por <strong>Erick Carcelén</strong></p>
-      <p>© 2026 · Quito, Ecuador</p>
-      <a href="#inicio" class="to-top">Volver arriba ↑</a>
-    </footer>
-  </main>
-
-  <script type="module" src="js/main.js?v=16"></script>
-  <script type="module" src="js/secciones.js?v=9"></script>
-  <script type="module" src="js/stack.js?v=3"></script>
-</body>
-</html>
+    syncControl();
+    button.hidden = false;
+  }, { once: true });
+})();
+</script><link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/icono-claro-32.png" media="(prefers-color-scheme: light)"><link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/icono-oscuro-32.png" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/icono-claro-192.png" media="(prefers-color-scheme: light)"><link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/icono-oscuro-192.png" media="(prefers-color-scheme: dark)"><link rel="apple-touch-icon" href="/assets/icons/apple-oscuro.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"><link rel="stylesheet" href="/_astro/index.LQgQTPIn.css"></head><body class="is-loading"><!-- Pantalla de carga: avanza con la descarga del avatar (eventos avatar:progreso / avatar:listo) --><div class="loader" id="loader" aria-live="polite"><div class="loader-marquee" aria-hidden="true"><div class="loader-track"><span>SOFTWARE</span><i>✦</i><span>DATOS</span><i>✦</i><span>INTELIGENCIA ARTIFICIAL</span><i>✦</i><span>SOFTWARE</span><i>✦</i><span>DATOS</span><i>✦</i><span>INTELIGENCIA ARTIFICIAL</span><i>✦</i></div></div><div class="loader-pill" id="loaderPill"><span class="loader-label" id="loaderLabel">Cargando</span><span class="loader-pct"><span id="loaderPct">0</span>%</span><span class="loader-bar"><span id="loaderBar"></span></span></div></div><header class="nav"><a class="logo" href="#inicio" aria-label="Erick Carcelén · Inicio"><img src="/assets/icons/icono-claro-192.png" alt="" width="44" height="44"><img src="/assets/icons/icono-oscuro-192.png" alt="" width="44" height="44" class="logo-light"></a><nav class="links" aria-label="Principal"><a href="#sobre"><span data-t="Sobre mí">Sobre mí</span></a><a href="#trayectoria"><span data-t="Trayectoria">Trayectoria</span></a><a href="#proyectos"><span data-t="Proyectos">Proyectos</span></a><a href="#tecnologias"><span data-t="Stack">Stack</span></a><a href="#contacto"><span data-t="Contacto">Contacto</span></a></nav><div class="nav-actions"><button class="theme-toggle" type="button" aria-label="Modo claro" aria-pressed="false" hidden><svg class="theme-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg><svg class="theme-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 15.1A9 9 0 0 1 8.9 3.2a9.2 9.2 0 1 0 11.9 11.9Z"></path></svg></button><a class="nav-cta" href="https://github.com/ErickC162" target="_blank" rel="noopener">GitHub ↗</a></div></header><script type="module">var e={loader:document.getElementById(`loader`),pill:document.getElementById(`loaderPill`),label:document.getElementById(`loaderLabel`),pct:document.getElementById(`loaderPct`),bar:document.getElementById(`loaderBar`)},t=0,n=8,r=!1;function i(){r||(r=!0,e.pill.classList.add(`is-done`),e.label.textContent=`Bienvenido`,setTimeout(()=>{e.loader.classList.add(`is-out`),document.body.classList.remove(`is-loading`),window.dispatchEvent(new Event(`sitio:listo`)),setTimeout(()=>e.loader.remove(),1100)},650))}function a(){t+=(n-t)*.12,n-t<.5&&(t=n);let r=Math.round(t);e.pct.textContent=String(r),e.bar.style.width=r+`%`,r<100?requestAnimationFrame(a):i()}requestAnimationFrame(a),addEventListener(`avatar:progreso`,e=>{n=Math.max(n,Math.min(95,e.detail*95))}),addEventListener(`avatar:listo`,()=>{n=100}),setTimeout(()=>{n=100},9e3);</script><main><section class="hero" id="inicio"><div class="hero-glow" aria-hidden="true"></div><!-- isla de React Three Fiber: solo en el cliente (WebGL) --><div id="avatar" role="img" aria-label="Avatar 3D de Erick Carcelén. Arrástralo para que mire; tócalo para que salude."><style>astro-island,astro-slot,astro-static-slot{display:contents}</style><script>(function(){let e=async e=>{await(await e())()};(self.Astro||(self.Astro={})).only=e,window.dispatchEvent(new Event(`astro:only`))})();</script><script>(function(){function e(t){"@babel/helpers - typeof";return e=typeof Symbol==`function`&&typeof Symbol.iterator==`symbol`?function(e){return typeof e}:function(e){return e&&typeof Symbol==`function`&&e.constructor===Symbol&&e!==Symbol.prototype?`symbol`:typeof e},e(t)}function t(t,n){if(e(t)!=`object`||!t)return t;var r;if(typeof Symbol<`u`&&(r=t[Symbol.toPrimitive])!==void 0){var i=r.call(t,n||`default`);if(e(i)!=`object`)return i;throw TypeError(`@@toPrimitive must return a primitive value.`)}return(n===`string`?String:Number)(t)}function n(n){var r=t(n,`string`);return e(r)==`symbol`?r:r+``}function r(e,t,r){return(t=n(t))in e?Object.defineProperty(e,t,{value:r,enumerable:!0,configurable:!0,writable:!0}):e[t]=r,e}let i=/* @__PURE__ */ new Set([`__proto__`,`constructor`,`prototype`]);{let e={0:e=>a(e),1:e=>n(e),2:e=>new RegExp(e),3:e=>new Date(e),4:e=>new Map(n(e)),5:e=>new Set(n(e)),6:e=>BigInt(e),7:e=>new URL(e),8:e=>new Uint8Array(e),9:e=>new Uint16Array(e),10:e=>new Uint32Array(e),11:e=>1/0*e},t=t=>{let[n,r]=t;return n in e?e[n](r):void 0},n=e=>e.map(t),a=e=>typeof e!=`object`||!e?e:Object.fromEntries(Object.entries(e).map(([e,n])=>[e,t(n)]));class o extends HTMLElement{constructor(...e){super(...e),r(this,`Component`,void 0),r(this,`hydrator`,void 0),r(this,`hydrate`,async()=>{var e;if(!this.hydrator||!this.isConnected)return;let t=(e=this.parentElement)==null?void 0:e.closest(`astro-island[ssr]`);if(t){t.addEventListener(`astro:hydrate`,this.hydrate,{once:!0});return}let n=this.querySelectorAll(`astro-slot`),r={},i=this.querySelectorAll(`template[data-astro-template]`);for(let e of i){let t=e.closest(this.tagName);t!=null&&t.isSameNode(this)&&(r[e.getAttribute(`data-astro-template`)||`default`]=e.innerHTML,e.remove())}for(let e of n){let t=e.closest(this.tagName);t!=null&&t.isSameNode(this)&&(r[e.getAttribute(`name`)||`default`]=e.innerHTML)}let o;try{o=this.hasAttribute(`props`)?a(JSON.parse(this.getAttribute(`props`))):{}}catch(e){let t=this.getAttribute(`component-url`)||`<unknown>`,n=this.getAttribute(`component-export`);throw n&&(t+=` (export ${n})`),console.error(`[hydrate] Error parsing props for component ${t}`,this.getAttribute(`props`),e),e}await this.hydrator(this)(this.Component,o,r,{client:this.getAttribute(`client`)}),this.removeAttribute(`ssr`),this.dispatchEvent(new CustomEvent(`astro:hydrate`))}),r(this,`unmount`,()=>{this.isConnected||this.dispatchEvent(new CustomEvent(`astro:unmount`))})}disconnectedCallback(){document.removeEventListener(`astro:after-swap`,this.unmount),document.addEventListener(`astro:after-swap`,this.unmount,{once:!0})}connectedCallback(){if(!this.hasAttribute(`await-children`)||document.readyState===`interactive`||document.readyState===`complete`)this.childrenConnectedCallback();else{let e=()=>{document.removeEventListener(`DOMContentLoaded`,e),t.disconnect(),this.childrenConnectedCallback()},t=new MutationObserver(()=>{var t;((t=this.lastChild)==null?void 0:t.nodeType)===Node.COMMENT_NODE&&this.lastChild.nodeValue===`astro:end`&&(this.lastChild.remove(),e())});t.observe(this,{childList:!0}),document.addEventListener(`DOMContentLoaded`,e)}}async childrenConnectedCallback(){let e=this.getAttribute(`before-hydration-url`);e&&await import(e),this.start()}getRetryImportUrl(e){let t=new URL(e,document.baseURI);return t.searchParams.set(`astro-retry`,Date.now().toString()),t.toString()}async importWithRetry(e){try{return await import(e)}catch(t){return await new Promise(e=>setTimeout(e,1e3)),import(this.getRetryImportUrl(e))}}handleHydrationError(e){let t=this.getAttribute(`component-url`),n=new CustomEvent(`astro:hydration-error`,{cancelable:!0,bubbles:!0,composed:!0,detail:{error:e,componentUrl:t}});this.dispatchEvent(n)&&console.error(`[astro-island] Error hydrating ${t}`,e)}async start(){let e=JSON.parse(this.getAttribute(`opts`)),t=this.getAttribute(`client`);if(Astro[t]===void 0)window.addEventListener(`astro:${t}`,()=>this.start(),{once:!0});else try{await Astro[t](async()=>{let e=this.getAttribute(`renderer-url`);try{let[t,{default:n}]=await Promise.all([this.importWithRetry(this.getAttribute(`component-url`)),e?this.importWithRetry(e):Promise.resolve({default:()=>()=>{}})]),r=this.getAttribute(`component-export`)||`default`;if(r.includes(`.`)){this.Component=t;for(let e of r.split(`.`)){if(i.has(e)||!this.Component||typeof this.Component!=`object`&&typeof this.Component!=`function`||!Object.hasOwn(this.Component,e))throw Error(`Invalid component export path: ${r}`);this.Component=this.Component[e]}}else{if(i.has(r))throw Error(`Invalid component export path: ${r}`);this.Component=t[r]}return this.hydrator=n,this.hydrate}catch(e){return this.handleHydrationError(e),()=>{}}},e,this)}catch(e){this.handleHydrationError(e)}}attributeChangedCallback(){this.hydrate()}}r(o,`observedAttributes`,[`props`]),customElements.get(`astro-island`)||customElements.define(`astro-island`,o)}})();</script><astro-island uid="3EY3o" component-url="/_astro/Avatar.Bn6NpswA.js" component-export="default" renderer-url="/_astro/client.ClywqXCn.js" props="{}" ssr client="only" opts="{&quot;name&quot;:&quot;Avatar&quot;,&quot;value&quot;:&quot;react&quot;}"></astro-island></div><div class="hero-name"><p class="hello">Hola, soy</p><h1><span class="line">ERICK</span><span class="line accent">CARCELÉN</span></h1></div><div class="hero-role"><p class="role-small">Desarrollador de</p><div class="role-swap" aria-live="off"><span class="role-word is-on">SOFTWARE</span><span class="role-word">DATOS</span><span class="role-word">IA</span></div><p class="role-note">Estudiante de la EPN · Pasante en WellPerf</p></div><a class="scroll-hint" href="#sobre"><span></span>Desliza</a></section><script type="module">var e=matchMedia(`(prefers-reduced-motion: reduce)`).matches,t=[...document.querySelectorAll(`.role-word`)],n=0;t.length>1&&!e&&setInterval(()=>{let e=t[n];n=(n+1)%t.length;let r=t[n];e.classList.remove(`is-on`),e.classList.add(`is-out`),r.classList.add(`is-on`),setTimeout(()=>{e.classList.add(`no-anim`),e.classList.remove(`is-out`),e.offsetWidth,e.classList.remove(`no-anim`)},900)},2600);</script><section class="about wrap" id="sobre"><p class="eyebrow reveal">Sobre mí</p><p class="about-lead reveal">Me gusta llevar una idea <em>de cero a algo que la gente usa</em>: un juego en una feria, un asistente que atiende clientes o una herramienta que un equipo usa todos los días.</p><div class="about-grid"><p class="about-text reveal">Estudio en la Escuela Politécnica Nacional, en Quito, y hago mis prácticas en el área de TI de WellPerf. Me muevo entre la web, el escritorio, los videojuegos y la inteligencia artificial, con un interés especial en los datos.</p><ul class="stats"><li class="reveal"><b data-count="5">5</b><span>Proyectos destacados</span></li><li class="reveal"><b data-count="25" data-suffix="+">25+</b><span>Repositorios en GitHub</span></li><li class="reveal"><b data-count="4">4</b><span>Plataformas: web, móvil, escritorio y juegos</span></li></ul></div></section><section class="career wrap" id="trayectoria"><h2 class="section-title reveal">Mi <span>trayectoria</span></h2><div class="timeline" id="timeline"><div class="timeline-line" aria-hidden="true"><span id="timelineFill"></span></div><article class="tl-item reveal"><div class="tl-role"><h3>Estudiante de Ingeniería</h3><p>Escuela Politécnica Nacional</p><small>Mayo 2021 – hoy</small></div><div class="tl-year"><span class="tl-dot"></span>2021</div><p class="tl-desc">Carrera de pregrado en Quito. Bases de programación, estructuras de datos, bases de datos y recuperación de información.</p></article><article class="tl-item reveal"><div class="tl-role"><h3>Pasante de TI</h3><p>WellPerf</p><small>Julio 2026 – hoy</small></div><div class="tl-year"><span class="tl-dot"></span>2026</div><p class="tl-desc">Desarrollo de herramientas internas y de un juego interactivo para ferias del sector petrolero, soporte técnico de nivel 1 a los usuarios y otras tareas del área de TI.</p></article><article class="tl-item reveal"><div class="tl-role"><h3>Desarrollo independiente</h3><p>Proyectos propios</p><small>En paralelo, 2026 – hoy</small></div><div class="tl-year"><span class="tl-dot"></span>Hoy</div><p class="tl-desc">Productos completos por cuenta propia: un sitio de minijuegos de fútbol, una app de escritorio para cámaras de seguridad y un asistente de WhatsApp con IA.</p></article></div></section><section class="work" id="proyectos"><div class="work-sticky"><div class="work-head wrap"><h2 class="section-title">Mis <span>proyectos</span></h2><p class="work-count"><span id="workIndex">01</span> / 05</p></div><div class="work-track" id="workTrack"><article class="project flip"><div class="flip-inner"><div class="flip-back" inert><div class="project-info"><span class="project-num">01</span><div><h3>Peloteo</h3><p class="project-kind">Proyecto personal · Web</p></div></div><p class="project-desc">Minijuegos diarios sobre el fútbol ecuatoriano: palabra del día, tres en raya con futbolistas, campeones e históricos. Sin cuentas, sin publicidad y sin cookies; cada dato se verifica con su fuente.</p><div class="project-tools"><span>Herramientas</span><p>React, TypeScript, Vite, Prisma, PostgreSQL, Cloudflare Pages</p></div><div class="flip-actions"><a class="project-link" href="https://peloteo-nij.pages.dev/" target="_blank" rel="noopener">Ver sitio <b>↗</b></a><button class="flip-btn flip-close" type="button" aria-label="Volver a la imagen de Peloteo"><span>Volver</span><i aria-hidden="true">↺</i></button></div></div><div class="flip-front"><div class="flip-media" role="img" aria-label="Peloteo en escritorio y celular: portada con los juegos del día, palabra del día y tres en raya"><img src="/assets/proyectos/peloteo.webp" alt="" width="1600" height="1000" loading="lazy" decoding="async"><img class="flip-media-light" src="/assets/proyectos/peloteo-claro.webp" alt="" width="1600" height="1000" loading="lazy" decoding="async" fetchpriority="low"></div><div class="flip-meta"><span class="project-num">01</span><div><h3>Peloteo</h3><p class="project-kind">Proyecto personal · Web</p></div></div><button class="flip-btn flip-open" type="button" aria-label="Ver detalles de Peloteo" aria-expanded="false"><span>Detalles</span><i aria-hidden="true">↻</i></button></div></div></article><article class="project flip"><div class="flip-inner"><div class="flip-back" inert><div class="project-info"><span class="project-num">02</span><div><h3>Asistente de WhatsApp con IA</h3><p class="project-kind">MVP · Backend e IA</p></div></div><p class="project-desc">Atiende a los clientes de una cadena de lavanderías: sucursales cercanas, promociones y pedidos a domicilio. Incluye un panel web en tiempo real para los asesores y pruebas de seguridad contra ataques.</p><div class="project-tools"><span>Herramientas</span><p>Python, FastAPI, Gemini, React, Tailwind, WhatsApp Cloud API</p></div><div class="flip-actions"><button class="flip-btn flip-close" type="button" aria-label="Volver a la imagen de Asistente de WhatsApp con IA"><span>Volver</span><i aria-hidden="true">↺</i></button></div></div><div class="flip-front"><div class="flip-media" role="img" aria-label="Panel de atención al cliente con métricas en tiempo real y una conversación de ejemplo en WhatsApp con el asistente"><img src="/assets/proyectos/asistente.webp" alt="" width="1600" height="1000" loading="lazy" decoding="async"><img class="flip-media-light" src="/assets/proyectos/asistente-claro.webp" alt="" width="1600" height="1000" loading="lazy" decoding="async" fetchpriority="low"></div><div class="flip-meta"><span class="project-num">02</span><div><h3>Asistente de WhatsApp con IA</h3><p class="project-kind">MVP · Backend e IA</p></div></div><button class="flip-btn flip-open" type="button" aria-label="Ver detalles de Asistente de WhatsApp con IA" aria-expanded="false"><span>Detalles</span><i aria-hidden="true">↻</i></button></div></div></article><article class="project flip"><div class="flip-inner"><div class="flip-back" inert><div class="project-info"><span class="project-num">03</span><div><h3>Oil &amp; Power</h3><p class="project-kind">WellPerf · Videojuego</p></div></div><p class="project-desc">Juego para el stand de feria: el jugador interpreta registros de pozo (Gamma Ray y Resistividad) para encontrar el yacimiento. Física real, audio generado por código y pantalla táctil.</p><div class="project-tools"><span>Herramientas</span><p>Godot 4, GDScript, shaders, física Verlet</p></div><div class="flip-actions"><button class="flip-btn flip-close" type="button" aria-label="Volver a la imagen de Oil &amp; Power"><span>Volver</span><i aria-hidden="true">↺</i></button></div></div><div class="flip-front"><div class="flip-media" role="img" aria-label="Oil &amp; Power en una pantalla táctil de feria: pozo con capas reveladas y registro de Gamma Ray y Resistividad"><img src="/assets/proyectos/oilpower.webp" alt="" width="1600" height="1000" loading="lazy" decoding="async"><img class="flip-media-light" src="/assets/proyectos/oilpower-claro.webp" alt="" width="1600" height="1000" loading="lazy" decoding="async" fetchpriority="low"></div><div class="flip-meta"><span class="project-num">03</span><div><h3>Oil &amp; Power</h3><p class="project-kind">WellPerf · Videojuego</p></div></div><button class="flip-btn flip-open" type="button" aria-label="Ver detalles de Oil &amp; Power" aria-expanded="false"><span>Detalles</span><i aria-hidden="true">↻</i></button></div></div></article><article class="project flip"><div class="flip-inner"><div class="flip-back" inert><div class="project-info"><span class="project-num">04</span><div><h3>Plataforma interna</h3><p class="project-kind">WellPerf · Web full-stack</p></div></div><p class="project-desc">Portal de módulos para el personal: credenciales digitales, asistencia, hojas de vida, compras y requisiciones, con inicio de sesión corporativo y reportes en PDF. Código privado de la empresa.</p><div class="project-tools"><span>Herramientas</span><p>Next.js, Tailwind, PostgreSQL, Microsoft Entra ID</p></div><div class="flip-actions"><button class="flip-btn flip-close" type="button" aria-label="Volver a la imagen de Plataforma interna"><span>Volver</span><i aria-hidden="true">↺</i></button></div></div><div class="flip-front"><div class="flip-media" role="img" aria-label="Portal de módulos de WellPerf en el navegador y una credencial digital de ejemplo"><img src="/assets/proyectos/plataforma.webp" alt="" width="1600" height="1000" loading="lazy" decoding="async"><img class="flip-media-light" src="/assets/proyectos/plataforma-claro.webp" alt="" width="1600" height="1000" loading="lazy" decoding="async" fetchpriority="low"></div><div class="flip-meta"><span class="project-num">04</span><div><h3>Plataforma interna</h3><p class="project-kind">WellPerf · Web full-stack</p></div></div><button class="flip-btn flip-open" type="button" aria-label="Ver detalles de Plataforma interna" aria-expanded="false"><span>Detalles</span><i aria-hidden="true">↻</i></button></div></div></article><article class="project flip"><div class="flip-inner"><div class="flip-back" inert><div class="project-info"><span class="project-num">05</span><div><h3>ARGOS</h3><p class="project-kind">Proyecto personal · Escritorio</p></div></div><p class="project-desc">App de escritorio para ver y mover cámaras de seguridad en vivo, con avisos a Telegram cuando detecta a una persona. Se distribuye como un solo ejecutable.</p><div class="project-tools"><span>Herramientas</span><p>Python, RTSP, Telegram Bot API, PyInstaller</p></div><div class="flip-actions"><button class="flip-btn flip-close" type="button" aria-label="Volver a la imagen de ARGOS"><span>Volver</span><i aria-hidden="true">↺</i></button></div></div><div class="flip-front"><div class="flip-media" role="img" aria-label="ARGOS mostrando cuatro cámaras de ejemplo y un aviso de persona detectada en Telegram"><img src="/assets/proyectos/argos.webp" alt="" width="1600" height="1000" loading="lazy" decoding="async"><img class="flip-media-light" src="/assets/proyectos/argos-claro.webp" alt="" width="1600" height="1000" loading="lazy" decoding="async" fetchpriority="low"></div><div class="flip-meta"><span class="project-num">05</span><div><h3>ARGOS</h3><p class="project-kind">Proyecto personal · Escritorio</p></div></div><button class="flip-btn flip-open" type="button" aria-label="Ver detalles de ARGOS" aria-expanded="false"><span>Detalles</span><i aria-hidden="true">↻</i></button></div></div></article></div></div></section><section class="stack-sec" id="tecnologias"><div class="wrap stack-head"><h2 class="section-title reveal">Mi <span>stack</span></h2><p class="stack-hint reveal">Arrástralas, lánzalas o empújalas</p></div><div class="stack-stage" id="stackStage"><canvas id="stackCanvas" aria-hidden="true"></canvas><ul class="stack-list" id="stackList" aria-label="Tecnologías que uso"><li data-g="lang">Python</li><li data-g="lang">TypeScript</li><li data-g="lang">JavaScript</li><li data-g="web">React</li><li data-g="web">Next.js</li><li data-g="back">FastAPI</li><li data-g="back">Node.js</li><li data-g="data">PostgreSQL</li><li data-g="data">Prisma</li><li data-g="web">Tailwind</li><li data-g="game">Godot</li><li data-g="web">Three.js</li><li data-g="lang">Java</li><li data-g="lang">Kotlin</li><li data-g="lang">Go</li><li data-g="lang">C</li><li data-g="data">SQL</li><li data-g="ai">Gemini</li><li data-g="tool">Git</li><li data-g="tool">Cloudflare</li></ul></div></section><section class="contact wrap" id="contacto"><h2 class="contact-title reveal">Hablemos<span>.</span></h2><p class="contact-lead reveal">¿Tienes un proyecto, una práctica o una idea? Escríbeme y te respondo pronto.</p><div class="contact-grid"><div class="contact-item reveal"><h3>Correo</h3><a class="contact-big contact-mail" href="mailto:erickedu2002@hotmail.com">erickedu2002<wbr>@hotmail.com</a></div><div class="contact-item reveal"><h3>Ubicación</h3><p class="contact-big">Quito, Ecuador</p></div><div class="contact-item reveal"><h3>Redes</h3><ul class="contact-social"><li><a href="https://github.com/ErickC162" target="_blank" rel="noopener">GitHub <span>↗</span></a></li><li><a href="https://www.linkedin.com/in/erick-carcel%C3%A9n/" target="_blank" rel="noopener">LinkedIn <span>↗</span></a></li></ul></div></div></section><footer class="site-footer wrap"><p>Diseñado y desarrollado por <strong>Erick Carcelén</strong></p><p>© 2026 · Quito, Ecuador</p><a href="#inicio" class="to-top">Volver arriba ↑</a></footer><p class="site-credits wrap">Modelos 3D usados en el avatar, licencia <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>: <a href="https://sketchfab.com/3d-models/glasses-4-d9c1067a9bd34875878c3d75c70d7365" target="_blank" rel="noopener">«Glasses 4»</a> de Dokono Kinokoda · <a href="https://sketchfab.com/3d-models/human-teeth-c4c569f0e08948e2a572007a7a5726f2" target="_blank" rel="noopener">«Human teeth»</a> de Alexander Antipov.</p><script type="module" src="/_astro/Secciones.astro_astro_type_script_index_0_lang.DOU2JGfY.js"></script></main></body></html>
